@@ -4,44 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SIXT — Age Filter · 11 Design Options</title>
+<style id="pw-hide">html{visibility:hidden;}</style>
 <script>
 (function(){
-  const KEY = 'sixt_proto_auth';
   const PWD = 'age-filter';
-  if(sessionStorage.getItem(KEY) !== '1'){
-    document.addEventListener('DOMContentLoaded', function(){
-      document.body.style.display = 'none';
-      var overlay = document.createElement('div');
-      overlay.id = 'pw-overlay';
-      overlay.innerHTML = `
-        <div style="position:fixed;inset:0;background:#1A1A1A;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;">
-          <div style="background:#fff;border-radius:16px;padding:40px 48px;width:360px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.4);">
-            <div style="font-size:28px;font-weight:900;letter-spacing:-0.5px;margin-bottom:4px;">SIXT</div>
-            <div style="font-size:13px;color:#828287;margin-bottom:28px;">Design exploration — Age filter</div>
-            <input id="pw-input" type="password" placeholder="Enter password" autofocus
-              style="width:100%;padding:12px 16px;border:1.5px solid #C9C9CF;border-radius:10px;font-size:15px;outline:none;margin-bottom:10px;box-sizing:border-box;">
-            <div id="pw-error" style="color:#e53e3e;font-size:12px;height:16px;margin-bottom:8px;"></div>
-            <button id="pw-btn"
-              style="width:100%;padding:12px;background:#FF5000;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">
-              View prototype
-            </button>
-          </div>
-        </div>`;
-      document.body.parentNode.insertBefore(overlay, document.body.nextSibling);
-      function tryUnlock(){
-        if(document.getElementById('pw-input').value === PWD){
-          sessionStorage.setItem(KEY,'1');
-          overlay.remove();
-          document.body.style.display='';
-        } else {
-          document.getElementById('pw-error').textContent = 'Incorrect password, please try again.';
-          document.getElementById('pw-input').select();
-        }
+  const KEY = 'sixt_proto_ok';
+  function showPage(){ document.getElementById('pw-hide').remove(); document.getElementById('pw-overlay')?.remove(); }
+  function showOverlay(){
+    document.getElementById('pw-hide').remove();
+    var o = document.createElement('div');
+    o.id = 'pw-overlay';
+    o.innerHTML = '<div style="position:fixed;inset:0;background:#1A1A1A;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;"><div style="background:#fff;border-radius:16px;padding:40px 48px;width:360px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.4);"><div style="font-size:28px;font-weight:900;letter-spacing:-.5px;margin-bottom:4px;">SIXT</div><div style="font-size:13px;color:#828287;margin-bottom:28px;">Design exploration — Age filter</div><input id="pw-in" type="password" placeholder="Enter password" style="width:100%;padding:12px 16px;border:1.5px solid #C9C9CF;border-radius:10px;font-size:15px;outline:none;margin-bottom:10px;box-sizing:border-box;"><div id="pw-err" style="color:#e53e3e;font-size:12px;height:16px;margin-bottom:8px;"></div><button id="pw-btn" style="width:100%;padding:12px;background:#FF5000;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">View prototype</button></div></div>';
+    document.documentElement.appendChild(o);
+    function tryUnlock(){
+      if(document.getElementById('pw-in').value===PWD){
+        sessionStorage.setItem(KEY,'1');
+        o.remove();
+      } else {
+        document.getElementById('pw-err').textContent='Incorrect password, please try again.';
+        document.getElementById('pw-in').select();
       }
-      document.getElementById('pw-btn').addEventListener('click', tryUnlock);
-      document.getElementById('pw-input').addEventListener('keydown', function(e){ if(e.key==='Enter') tryUnlock(); });
-    });
+    }
+    document.getElementById('pw-btn').addEventListener('click',tryUnlock);
+    document.getElementById('pw-in').addEventListener('keydown',function(e){if(e.key==='Enter')tryUnlock();});
+    setTimeout(function(){ document.getElementById('pw-in')?.focus(); }, 50);
   }
+  if(sessionStorage.getItem(KEY)==='1'){ showPage(); }
+  else { document.addEventListener('DOMContentLoaded', showOverlay); }
 })();
 </script>
 <style>
