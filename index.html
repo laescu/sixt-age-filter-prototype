@@ -625,7 +625,12 @@ html { scroll-behavior: smooth; }
     margin: 0 auto;
   }
   .mw-tab .card{ display: flex; flex-direction: column; align-items: flex-start; }
-  .mw-tab .card-desc{ flex: 1; }
+  /* Phone always first regardless of badge/label above it in HTML */
+  .mw-tab .phone{ order: -1; margin-bottom: 14px; }
+  .mw-tab .card-preferred{ order: 0; margin-top: 4px; }
+  .mw-tab .card-label{ order: 0; }
+  .mw-tab .card-title{ order: 0; }
+  .mw-tab .card-desc{ order: 0; }
 
   .mw-tab .card-preferred{
     display: inline-block;
@@ -639,7 +644,7 @@ html { scroll-behavior: smooth; }
     text-transform: uppercase; color: #8E8E93; margin-bottom: 8px;
   }
   .mw-tab .card-title{ font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-  .mw-tab .card-desc{ font-size: 13px; color: #636366; line-height: 1.5; margin-bottom: 16px; flex: 1; }
+  .mw-tab .card-desc{ font-size: 13px; color: #636366; line-height: 1.5; margin-bottom: 16px; }
 
   /* ── Phone shell ─────────────────────── */
   .mw-tab .phone{
