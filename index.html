@@ -623,14 +623,11 @@ html { scroll-behavior: smooth; }
     gap: 48px 40px;
     max-width: 1280px;
     margin: 0 auto;
+    align-items: start;
   }
   .mw-tab .card{ display: flex; flex-direction: column; align-items: flex-start; }
-  /* Phone always first regardless of badge/label above it in HTML */
+  /* Phone always at the top of every card */
   .mw-tab .phone{ order: -1; margin-bottom: 14px; }
-  .mw-tab .card-preferred{ order: 0; margin-top: 4px; }
-  .mw-tab .card-label{ order: 0; }
-  .mw-tab .card-title{ order: 0; }
-  .mw-tab .card-desc{ order: 0; }
 
   .mw-tab .card-preferred{
     display: inline-block;
