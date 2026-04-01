@@ -626,8 +626,10 @@ html { scroll-behavior: smooth; }
     align-items: start;
   }
   .mw-tab .card{ display: flex; flex-direction: column; align-items: flex-start; }
-  /* Phone always at the top of every card */
-  .mw-tab .phone{ order: -1; margin-bottom: 14px; }
+  .mw-tab .card-meta{
+    display: flex; flex-direction: column; align-items: flex-start;
+    width: 100%; margin-bottom: 16px;
+  }
 
   .mw-tab .card-preferred{
     display: inline-block;
@@ -1995,10 +1997,12 @@ html { scroll-behavior: smooth; }
 
 <!-- ─── ALT A: Below corporate rate ──── -->
 <div class="card" id="mw-a">
+  <div class="card-meta">
   <div class="card-preferred">★ Preferred option</div>
   <div class="card-label">Alt A</div>
   <div class="card-title">Below corporate rate</div>
   <div class="card-desc">A small secondary line below "Apply corporate rate" shows Driver age: 25+. Tap opens a sheet picker. Minimal footprint.</div>
+  </div>
   <div class="phone">
     <!-- Status bar -->
     <div class="status-bar">
@@ -2085,10 +2089,12 @@ html { scroll-behavior: smooth; }
 
 <!-- ─── ALT B: Inline with corporate rate ──── -->
 <div class="card" id="mw-b">
+  <div class="card-meta">
   <div class="card-preferred">★ Preferred option</div>
   <div class="card-label">Alt B</div>
   <div class="card-title">Inline with corporate rate</div>
   <div class="card-desc">Driver age sits on the same line as "Apply corporate rate", separated by a dot. Single-row — no extra vertical space consumed.</div>
+  </div>
   <div class="phone">
     <div class="status-bar">
       <span>18:52</span>
@@ -2163,9 +2169,11 @@ html { scroll-behavior: smooth; }
 
 <!-- ─── ALT C: Age as a form field ──── -->
 <div class="card" id="mw-c">
+  <div class="card-meta">
   <div class="card-label">Alt C</div>
   <div class="card-title">Age as a form field</div>
   <div class="card-desc">Driver age appears as a full-width input field in the form, styled identically to the location field. Most consistent visual language.</div>
+  </div>
   <div class="phone">
     <div class="status-bar">
       <span>18:52</span>
@@ -2240,9 +2248,11 @@ html { scroll-behavior: smooth; }
 
 <!-- ─── ALT D: Collapsible accordion ──── -->
 <div class="card" id="mw-d">
+  <div class="card-meta">
   <div class="card-label">Alt D</div>
   <div class="card-title">Collapsible accordion</div>
   <div class="card-desc">Age hidden by default below a collapsed row. Tapping reveals an inline stepper. Zero footprint unless the user actively engages.</div>
+  </div>
   <div class="phone">
     <div class="status-bar">
       <span>18:52</span>
@@ -2321,9 +2331,11 @@ html { scroll-behavior: smooth; }
 
 <!-- ─── ALT E: Age pill in IBE header ──── -->
 <div class="card" id="mw-e">
+  <div class="card-meta">
   <div class="card-label">Alt E</div>
   <div class="card-title">Age pill in the header</div>
   <div class="card-desc">Compact pill in the IBE header row replaces the empty spacer. Always visible, adds no height to the form itself.</div>
+  </div>
   <div class="phone">
     <div class="status-bar">
       <span>18:52</span>
@@ -2395,9 +2407,11 @@ html { scroll-behavior: smooth; }
 
 <!-- ─── ALT F: Grey band above CTA ──── -->
 <div class="card" id="mw-f">
+  <div class="card-meta">
   <div class="card-label">Alt F</div>
   <div class="card-title">Grey summary band above CTA</div>
   <div class="card-desc">A light-grey row directly above "Show offers" confirms the age setting at a glance — feels like a form confirmation row, visually grouped with the CTA.</div>
+  </div>
   <div class="phone">
     <div class="status-bar">
       <span>18:52</span>
@@ -2486,6 +2500,29 @@ document.querySelectorAll('.tab-btn').forEach(function(btn) {
     this.classList.add('active');
     document.getElementById('tab-' + tab).classList.add('active');
     window.scrollTo({top: 0, behavior: 'instant'});
+  });
+});
+
+// Equalise card-meta heights within each row of 3
+function equaliseMeta() {
+  var metas = Array.from(document.querySelectorAll('.mw-tab .card-meta'));
+  metas.forEach(function(el) { el.style.height = 'auto'; });
+  for (var i = 0; i < metas.length; i += 3) {
+    var group = metas.slice(i, Math.min(i + 3, metas.length));
+    var maxH = Math.max.apply(null, group.map(function(el) { return el.offsetHeight; }));
+    group.forEach(function(el) { el.style.height = maxH + 'px'; });
+  }
+}
+window.addEventListener('load', equaliseMeta);
+window.addEventListener('resize', equaliseMeta);
+// Also run when switching to mobile tab
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.tab-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (this.dataset.tab === 'mobile') {
+        setTimeout(equaliseMeta, 50);
+      }
+    });
   });
 });
 </script>
