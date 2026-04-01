@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIXT — Age Filter · 11 Design Options</title>
+<style>
+  *, ::before, ::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: #EBEBED;
+    color: #1A1A1A;
+    -webkit-font-smoothing: antialiased;
+    min-width: 1260px;
+  }
+
+  /* ─── Page header ─────────────────────────────────────── */
+  .page-header {
+    background: #1A1A1A;
+    padding: 36px 64px 32px;
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 40px;
+  }
+  .page-header h1 { font-size: 26px; font-weight: 900; color: #fff; letter-spacing: -0.5px; }
+  .page-header p  { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 5px; line-height: 1.6; }
+  .ph-legend { display: flex; gap: 20px; flex-shrink: 0; }
+  .ph-item   { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.45); }
+  .ph-dot    { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .ph-dot.g  { background: #30D158; }
+  .ph-dot.y  { background: #FFD60A; }
+  .ph-dot.r  { background: #FF453A; }
+
+  /* ─── Option nav ──────────────────────────────────────── */
+  .opt-nav {
+    background: #fff;
+    border-bottom: 1px solid #E0E0E0;
+    padding: 0 64px;
+    display: flex; gap: 0;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .opt-nav a {
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 20px;
+    font-size: 12px; font-weight: 600; color: #636366;
+    text-decoration: none; border-bottom: 2px solid transparent;
+    transition: color 0.12s, border-color 0.12s;
+    white-space: nowrap;
+  }
+  .opt-nav a:hover { color: #1A1A1A; }
+  .opt-nav a.active { color: #FF5500; border-bottom-color: #FF5500; }
+  /* Preferred option label */
+  .opt-preferred-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #FF5000; color: #fff;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    padding: 3px 10px; border-radius: 160px;
+    margin-bottom: 10px; width: fit-content;
+  }
+  .opt-nav a.pref { color: #FF5000; font-weight: 700; }
+  .opt-nav a.pref .opt-nav-badge { background: #FF5000; }
+
+  .opt-nav-badge {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #1A1A1A; color: #fff;
+    font-size: 10px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .opt-nav a.active .opt-nav-badge { background: #FF5500; }
+
+  /* ─── Section layout ──────────────────────────────────── */
+  .opt-section {
+    display: flex; gap: 0;
+    border-bottom: 8px solid #EBEBED;
+    background: #fff;
+  }
+
+  /* Left meta panel */
+  .opt-meta {
+    width: 270px; flex-shrink: 0;
+    padding: 36px 28px;
+    border-right: 1px solid #EBEBED;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .opt-tag-row { display: flex; align-items: center; gap: 10px; }
+  .opt-tag {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: #1A1A1A; color: #fff;
+    font-size: 13px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .opt-title { font-size: 16px; font-weight: 800; }
+  .opt-sub { font-size: 12px; color: #1A1A1A; font-weight: 600; margin-top: -4px; }
+  .opt-desc { font-size: 12px; color: #636366; line-height: 1.6; }
+  .opt-pills { display: flex; gap: 5px; flex-wrap: wrap; }
+  .pill {
+    font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px;
+    letter-spacing: 0.1px;
+  }
+  .pill.g  { background: #E4F6EB; color: #1A7A3C; }
+  .pill.y  { background: #FFF8E0; color: #7A5800; }
+  .pill.r  { background: #FFEFED; color: #CC2200; }
+  .pill.gr { background: #F2F2F7; color: #636366; }
+  .opt-note {
+    font-size: 11px; color: #AEAEB2; line-height: 1.5;
+    border-top: 1px solid #F2F2F7; padding-top: 10px; margin-top: 4px;
+  }
+
+  /* Right screen panel */
+  .opt-screen {
+    flex: 1; padding: 28px 32px;
+    background: #F6F6F8;
+    display: flex; align-items: flex-start;
+  }
+
+  /* ─── Browser wrapper ─────────────────────────────────── */
+  /* Inner content is 1440px wide (Figma page width); scaled to 0.72 → displayed ~1037px */
+  .browser-outer {
+    width: 1037px; /* 1440 * 0.72 */
+    height: 331px; /* 460 * 0.72 */
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .browser-inner {
+    width: 1440px;
+    height: 460px;
+    transform: scale(0.72);
+    transform-origin: top left;
+    overflow: hidden;
+  }
+
+  /* Browser chrome bar */
+  .b-chrome {
+    height: 36px;
+    background: #E8E8EA;
+    border-bottom: 1px solid #D0D0D0;
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 12px;
+    flex-shrink: 0;
+  }
+  .b-dots { display: flex; gap: 5px; }
+  .b-dot  { width: 10px; height: 10px; border-radius: 50%; }
+  .b-dot.red    { background: #FF5F57; }
+  .b-dot.yellow { background: #FFBD2E; }
+  .b-dot.green  { background: #28C940; }
+  .b-addr {
+    flex: 1; height: 20px; background: #fff;
+    border-radius: 4px; display: flex; align-items: center;
+    padding: 0 10px; font-size: 11px; color: #636366;
+    border: 1px solid #D8D8D8;
+  }
+  .b-addr svg { margin-right: 5px; flex-shrink: 0; }
+
+  /* ─── Site styles (inside browser) ───────────────────── */
+  /* Exact design tokens from Figma file bWAwGs5SA519gEf7vz2727 */
+  /* fill_WDMMHE=#FF5000, fill_K894YO=#FFFFFF, fill_85W53V=#1A1A1A  */
+  /* fill_OC3M0S=#828287, fill_G3M5SG=#F4F4F9, stroke_K02QN8=#C9C9CF */
+
+  /* Campaign bar — fill_706BS1: #000000 */
+  .s-banderole {
+    background: #000; color: #fff;
+    font-size: 11px; font-weight: 700; padding: 6px 24px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    letter-spacing: 0.01em;
+  }
+  .s-banderole a { color: #FF5000; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+
+  /* Header — layout_R0L5BZ: transparent, padding 8px 80px, row, gap 32px */
+  .s-header {
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px;
+    position: relative; z-index: 10;
+    background: transparent;
+  }
+  /* SIXT logo — white italic bold, no orange X */
+  .s-logo {
+    font-size: 28px; font-weight: 900; color: #fff;
+    font-style: italic; letter-spacing: -0.04em; line-height: 1;
+  }
+  .s-logo em { color: #fff; font-style: inherit; }
+  /* Nav trailing — "Manage bookings" | "EN/€" | person */
+  .s-nav { display: flex; align-items: center; gap: 24px; }
+  .s-nav-item {
+    padding: 4px 0; font-size: 12px; font-weight: 700;
+    color: rgba(255,255,255,0.9);
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
+  }
+  .s-nav-sep { width: 1px; height: 16px; background: rgba(255,255,255,0.3); }
+  /* Age control in header nav — subtle pill outline */
+  .age-nav-ctrl {
+    border: 1px solid rgba(255,255,255,0.45);
+    border-radius: 160px;
+    padding: 4px 10px 4px 8px;
+    gap: 4px;
+  }
+
+  /* Hero */
+  .s-hero {
+    margin-top: -56px;
+    position: relative;
+    height: 460px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1d2b3a 0%, #243447 40%, #1a1f2e 100%);
+  }
+  .s-hero-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center 45%;
+  }
+  .s-hero-grad {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.28) 50%, rgba(0,0,0,0) 80%);
+  }
+  /* IBE wrap — layout_9ID3GW: x:80, width:1280 within 1440px page */
+  .s-ibe-wrap {
+    position: absolute;
+    top: 56px; left: 0; right: 0;
+    padding: 24px 80px 0;
+  }
+
+  /* IBE Card — layout_9ID3GW: padding 16px 24px, gap 8px, borderRadius 16px, width 1280px */
+  .s-ibe {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+    width: 100%;
+    padding: 16px 24px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+
+  /* ── Tabs row (layout_WILYEV: row, gap 24px) ──────────── */
+  /* layout_UJKDA9: chips row, gap 8px */
+  .s-ibe-tabs { display: flex; align-items: center; gap: 8px; }
+  /* Chip: layout_CS60FZ — height 36px, padding 0 16px 0 12px, radius 160px */
+  /* Active: fill_FYYA9K = #1A1A1A bg, white text */
+  /* Inactive: fill_OBC24W = #F4F4F9 bg, dark text S/Copy/Medium 400 */
+  .s-tab {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 16px 0 12px; height: 36px; border-radius: 160px;
+    font-size: 14px; cursor: pointer;
+    transition: background 0.1s;
+  }
+  .s-tab.active  { background: #1A1A1A; color: #fff; font-weight: 700; }
+  .s-tab:not(.active) { background: #F4F4F9; color: #1A1A1A; font-weight: 400; }
+  .s-tab-spacer { flex: 1; }
+  /* "View / edit my booking" — TextButton, underline, S/Copy/Small-Heavy */
+  .s-tab-link {
+    font-size: 12px; font-weight: 700; color: #1A1A1A; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 2px; white-space: nowrap;
+  }
+
+  /* ── ALL FIELDS IN ONE ROW (layout_COZ6E2: row, alignItems flex-end, gap 16px) */
+  .s-fields-row { display: flex; align-items: flex-end; gap: 16px; }
+
+  /* Location field — label + input container, flex fill */
+  .s-field { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+  /* S/Copy/Small-Heavy: 12px, 700, letterSpacing 1% */
+  .s-field-lbl { font-size: 12px; font-weight: 700; color: #1A1A1A; letter-spacing: 0.01em; white-space: nowrap; }
+  /* layout_CZ1871: row, padding 0 4px 0 12px, gap 12px, height fixed 52px, radius 12px */
+  /* stroke_IFCRJ9: 1px solid #C9C9CF */
+  .s-field-btn {
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 4px 0 12px; height: 52px; border-radius: 12px;
+    border: 1px solid #C9C9CF;
+    background: #fff; cursor: pointer;
+    font-size: 16px; font-weight: 400; color: #1A1A1A;
+    overflow: hidden;
+  }
+  /* Return location: layout_W90ESJ — no stroke, padding-left 0px */
+  .s-field-btn.ret {
+    border: 1px solid transparent;
+    padding-left: 0;
+  }
+  .s-field-btn.ph { color: #828287; }
+  .s-field-btn svg { flex-shrink: 0; }
+
+  /* Date pair group: label + [date input | time input] */
+  /* layout_G2OJZN: col, gap 4px, width 112px fixed */
+  /* layout_3TCGUN: col, gap 4px, width 104px fixed */
+  .s-date-group { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+  .s-date-pair  { display: flex; align-items: stretch; }
+  /* Date half: layout_CZ1871 with stroke_Z9R9CU: 1px 0px 1px 1px (no right border) */
+  /* radius: 12px 0 0 12px */
+  .s-date-d {
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 4px 0 12px; height: 52px; width: 112px;
+    border: 1px solid #C9C9CF; border-right: none;
+    border-radius: 12px 0 0 12px;
+    background: #fff; cursor: pointer;
+    font-size: 16px; font-weight: 400; color: #1A1A1A;
+    white-space: nowrap;
+  }
+  /* Time half: layout_CZ1871 with stroke_IFCRJ9: 1px all — radius: 0 12px 12px 0 */
+  .s-date-t {
+    display: flex; align-items: center;
+    padding: 0 8px 0 8px; height: 52px; width: 104px;
+    border: 1px solid #C9C9CF;
+    border-radius: 0 12px 12px 0;
+    background: #fff; cursor: pointer;
+    font-size: 16px; font-weight: 400; color: #1A1A1A;
+    white-space: nowrap;
+  }
+
+  /* CTA — layout_LVCU34: row center, padding 8px 40px, w 200px, radius 12px, #FF5000 */
+  .s-cta {
+    padding: 8px 40px; height: 52px; width: 200px; border-radius: 12px;
+    background: #FF5000; border: none; cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: #fff; white-space: nowrap;
+  }
+  .s-cta:hover { background: #E04800; }
+
+  /* Bottom row — layout_P6ESC9: row, gap 16px */
+  .s-ibe-bottom {
+    display: flex; align-items: center; gap: 16px;
+    font-size: 12px;
+  }
+  /* "Apply corporate rate" — TextButton, S/Copy/Small-Heavy 12px 700, underline #1A1A1A */
+  .s-ibe-bottom a {
+    color: #1A1A1A; font-size: 12px; font-weight: 700;
+    text-decoration: underline; text-underline-offset: 2px; cursor: pointer;
+  }
+
+  /* ─── Age variants ────────────────────────────────────── */
+
+  /* Option A — inline age field, same weight as other fields */
+  .age-field-a {
+    display: flex; flex-direction: column; gap: 4px;
+    flex: 0 0 76px;
+  }
+  .age-btn-a {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 6px 0 10px; height: 52px; border-radius: 12px;
+    border: 1px solid #C9C9CF; background: #fff; cursor: pointer;
+    font-size: 14px; font-weight: 400; color: #1A1A1A;
+    transition: border-color 0.12s;
+  }
+  .age-btn-a:hover { border-color: #A0A0A8; }
+
+  /* Option B — subtle muted row directly under CTA */
+  .age-row-b {
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    font-size: 11px; color: #828287; white-space: nowrap;
+  }
+  .age-row-b-r {
+    display: flex; align-items: center; justify-content: flex-end; gap: 5px;
+    font-size: 11px; color: #828287; white-space: nowrap;
+  }
+  .age-row-b-r .v { color: #1A1A1A; font-weight: 600; }
+  .age-row-b-r a  { color: #1A1A1A; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+  .age-row-b .v { color: #1A1A1A; font-weight: 600; }
+  .age-row-b a  { color: #1A1A1A; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+
+  /* Option C — "More options" toggle + expanded */
+  /* Option C — age embedded in IBE footer bar */
+  .age-footer-c {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; color: #828287; cursor: pointer; white-space: nowrap;
+  }
+  .age-footer-c:hover { color: #1A1A1A; }
+  .age-footer-c .v { color: #1A1A1A; font-weight: 600; }
+
+  /* Option E — CTA with age label */
+  .s-cta-e {
+    padding: 0 32px; height: 52px; border-radius: 12px;
+    background: #FF5000; border: none; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1px; flex-shrink: 0;
+  }
+  .cta-e-main { font-size: 16px; font-weight: 700; color: #fff; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .cta-e-sub  { font-size: 11px; color: rgba(255,255,255,0.65); font-weight: 400; white-space: nowrap; }
+
+  /* Option G — utility row between form and footer */
+  .util-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0 2px; border-top: 1px solid #F0F0F4;
+    font-size: 12px;
+  }
+  .util-row-link {
+    color: #1A1A1A; font-weight: 700; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 2px; white-space: nowrap;
+  }
+  .util-row-age {
+    display: flex; align-items: center; gap: 4px;
+    color: #828287; cursor: pointer; white-space: nowrap;
+  }
+  .util-row-age .v { color: #1A1A1A; font-weight: 600; }
+  .util-row-age:hover { color: #1A1A1A; }
+
+  /* Option H — footer bar with three items */
+  .footer-trio {
+    display: flex; align-items: center; gap: 0;
+    font-size: 12px; color: #828287;
+  }
+  .footer-trio-link {
+    color: #1A1A1A; font-weight: 700; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 2px; white-space: nowrap;
+  }
+  .footer-trio-sep { margin: 0 10px; color: #C9C9CF; }
+  .footer-trio-age {
+    display: flex; align-items: center; gap: 4px; cursor: pointer; white-space: nowrap;
+  }
+  .footer-trio-age .v { color: #1A1A1A; font-weight: 600; }
+
+  /* Option I — "View booking" as a ghost chip in the tab row */
+  .s-tab-ghost {
+    display: flex; align-items: center; gap: 6px;
+    padding: 0 12px; height: 36px; border-radius: 160px;
+    border: 1px solid #C9C9CF; background: transparent;
+    font-size: 12px; font-weight: 700; color: #1A1A1A; cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* ─── Results page (for options D and F) ─────────────── */
+  .s-results-page { background: #F4F5F6; }
+
+  /* Scrolled header (white bg) */
+  .s-header-scrolled {
+    height: 60px;
+    background: #fff;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px;
+    position: sticky; top: 0; z-index: 10;
+    flex-shrink: 0;
+  }
+  .s-logo-dark { font-size: 22px; font-weight: 900; color: #1A1A1A; font-style: italic; letter-spacing: -0.04em; }
+  .s-logo-dark em { color: #FF5500; font-style: inherit; }
+  .s-nav-dark { display: flex; align-items: center; gap: 4px; }
+  .s-nav-dark-item { padding: 6px 10px; font-size: 11px; color: #636366; cursor: pointer; border-radius: 6px; display: flex; align-items: center; gap: 3px; }
+
+  /* Compact IBE header (for results) */
+  .s-compact-ibe {
+    background: #fff; border-bottom: 1px solid #E8E8E8;
+    padding: 10px 40px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .s-compact-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 12px; border-radius: 8px;
+    border: 1.5px solid #E0E0E0; background: #fff;
+    font-size: 12px; color: #1A1A1A; cursor: pointer;
+    white-space: nowrap;
+  }
+  .s-compact-pill svg { color: #8E8E93; flex-shrink: 0; }
+  .s-compact-sep { width: 1px; height: 20px; background: #E0E0E0; }
+  .s-compact-cta {
+    margin-left: auto; padding: 8px 18px; border-radius: 8px;
+    background: #FF5500; border: none; cursor: pointer;
+    font-size: 12px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+
+  /* Filter row */
+  .s-filter-row {
+    padding: 10px 40px;
+    display: flex; align-items: center; gap: 8px;
+    background: #fff; border-bottom: 1px solid #E8E8E8;
+  }
+  .s-chip {
+    display: flex; align-items: center; gap: 5px;
+    padding: 7px 14px; border-radius: 20px;
+    background: #F2F2F7; border: none;
+    font-size: 12px; font-weight: 600; color: #1A1A1A;
+    cursor: pointer; white-space: nowrap;
+  }
+  .s-chip.sort { background: #fff; border: 1.5px solid #E0E0E0; }
+  .s-chip.active { background: #1A1A1A; color: #fff; }
+
+  /* Results banner */
+  .s-results-banner {
+    margin: 10px 40px 0;
+    background: #fff; border: 1px solid #E8E8E8; border-radius: 8px;
+    padding: 9px 14px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: #636366;
+  }
+  .s-results-banner a { color: #FF5500; font-weight: 600; text-decoration: none; cursor: pointer; }
+
+  /* Car cards */
+  .s-car-list { padding: 12px 40px; display: flex; gap: 12px; }
+  .s-car-card {
+    background: #1A1A1A; border-radius: 12px;
+    padding: 14px; flex: 1;
+  }
+  .s-car-badge { font-size: 9px; font-weight: 700; color: #FF5500; letter-spacing: 0.3px; text-transform: uppercase; margin-bottom: 5px; }
+  .s-car-name  { font-size: 14px; font-weight: 800; color: #fff; }
+  .s-car-cat   { font-size: 10px; color: rgba(255,255,255,0.45); margin-bottom: 8px; }
+  .s-car-price { font-size: 18px; font-weight: 900; color: #fff; letter-spacing: -0.3px; }
+  .s-car-day   { font-size: 10px; color: rgba(255,255,255,0.45); }
+  .s-car-cta   { margin-top: 8px; padding: 6px 14px; background: #FF5500; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; color: #fff; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- Page header -->
+<div class="page-header">
+  <div>
+    <h1>Age Filter — 6 Design Options</h1>
+    <p>Legal compliance requires collecting driver age. These options balance visibility, compliance and conversion impact.</p>
+  </div>
+  <div class="ph-legend">
+    <div class="ph-item"><div class="ph-dot g"></div> Conversion-friendly</div>
+    <div class="ph-item"><div class="ph-dot y"></div> Neutral</div>
+    <div class="ph-item"><div class="ph-dot r"></div> Higher friction</div>
+  </div>
+</div>
+
+<!-- Sticky option nav -->
+<nav class="opt-nav">
+  <a href="#opt-c" class="active pref"><span class="opt-nav-badge">C</span> Subtle right ★</a>
+  <a href="#opt-i" class="pref"><span class="opt-nav-badge">I</span> Ghost tab ★</a>
+  <a href="#opt-a"><span class="opt-nav-badge">A</span> Full IBE field</a>
+  <a href="#opt-b"><span class="opt-nav-badge">B</span> Subtle row</a>
+  <a href="#opt-d"><span class="opt-nav-badge">D</span> Footer line</a>
+  <a href="#opt-e"><span class="opt-nav-badge">E</span> CTA label</a>
+  <a href="#opt-f"><span class="opt-nav-badge">F</span> Header nav</a>
+  <a href="#opt-g"><span class="opt-nav-badge">G</span> Active tab badge</a>
+  <a href="#opt-h"><span class="opt-nav-badge">H</span> Footer trio</a>
+  <a href="#opt-j"><span class="opt-nav-badge">J</span> Results chip</a>
+  <a href="#opt-k"><span class="opt-nav-badge">K</span> Results banner</a>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     OPTION C — Subtle row, right-aligned
+═══════════════════════════════════════════════════════ -->
+<div class="opt-section" id="opt-c">
+  <div class="opt-meta">
+    <div class="opt-preferred-badge">★ Preferred option</div>
+    <div class="opt-tag-row">
+      <div class="opt-tag">C</div>
+      <div>
+        <div class="opt-title">Subtle row · right</div>
+        <div class="opt-sub">Muted age line, right-aligned under CTA</div>
+      </div>
+    </div>
+    <p class="opt-desc">Same approach as B but the "Driver age: 25+ ▾" text anchors to the right edge of the CTA button, creating a tighter visual grouping between the age control and the action it affects.</p>
+    <div class="opt-pills">
+      <span class="pill g">Low friction</span>
+      <span class="pill y">Moderate compliance</span>
+      <span class="pill gr">Homepage</span>
+    </div>
+    <p class="opt-note">The right-alignment links the age setting more directly to the CTA, which may improve discoverability for power users while remaining subtle for everyone else.</p>
+  </div>
+  <div class="opt-screen">
+    <div class="browser-outer">
+      <div class="browser-inner">
+        <div class="b-chrome">
+          <div class="b-dots"><div class="b-dot red"></div><div class="b-dot yellow"></div><div class="b-dot green"></div></div>
+          <div class="b-addr"><svg width="10" height="10" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg> sixt.com</div>
+        </div>
+        <div class="s-banderole"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FF5000"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+          SAVE 15% on Midweek rentals!&nbsp; <a>Apply Discount</a></div>
+        <div style="position:relative;">
+          <div class="s-hero">
+            <img class="s-hero-img" src="promo-bmw.png" alt="">
+            <div class="s-hero-grad"></div>
+          </div>
+          <div style="position:absolute;top:0;left:0;right:0;">
+            <div class="s-header">
+              <div style="display:flex;align-items:center;gap:16px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                <div class="s-logo">SIXT</div>
+              </div>
+              <div class="s-nav">
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Manage bookings</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg> EN / €</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+              </div>
+            </div>
+            <div class="s-ibe-wrap">
+              <div class="s-ibe">
+                <div class="s-ibe-tabs">
+                  <div class="s-tab active"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Car</div>
+                  <div class="s-tab"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg> Trucks</div>
+                  <div class="s-tab-spacer"></div>
+                  <div class="s-tab-link">View / edit my booking</div>
+                </div>
+                <div class="s-fields-row">
+                  <div class="s-field">
+                    <div class="s-field-lbl">Pick-up &amp; return</div>
+                    <div class="s-field-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Munich Airport</div>
+                  </div>
+                  <div class="s-field">
+                    <div class="s-field-btn ph ret"><svg width="24" height="24" viewBox="0 0 24 24" fill="#FF5000"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Different return location</div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Pick-up date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>22 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Return date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>25 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <!-- CTA + age right-aligned -->
+                  <div style="position:relative;flex-shrink:0;">
+                    <button class="s-cta">Show Cars</button>
+                    <div class="age-row-b-r" style="position:absolute;top:calc(100% + 6px);right:0;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#828287"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                      Driver age: <span class="v">+25</span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#828287"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="s-ibe-bottom"><a>Apply corporate rate</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     OPTION I — Ghost tab chip for booking management
+═══════════════════════════════════════════════════════ -->
+<div class="opt-section" id="opt-i">
+  <div class="opt-meta">
+    <div class="opt-preferred-badge">★ Preferred option</div>
+    <div class="opt-tag-row">
+      <div class="opt-tag">I</div>
+      <div>
+        <div class="opt-title">Ghost tab</div>
+        <div class="opt-sub">"View booking" as an outlined chip in the tab row</div>
+      </div>
+    </div>
+    <p class="opt-desc">"View / edit my booking" is elevated to an outlined ghost chip at the same height as "Car" and "Trucks" — making it feel like a first-class navigation option without competing with the active tab. Age stays discreetly in the footer bar.</p>
+    <div class="opt-pills">
+      <span class="pill g">Clear booking access</span>
+      <span class="pill g">Low friction</span>
+      <span class="pill gr">Homepage</span>
+    </div>
+    <p class="opt-note">The ghost chip gives the booking link a consistent, predictable location alongside the vehicle type tabs. The contrast (filled vs outlined) communicates it is a different type of action.</p>
+  </div>
+  <div class="opt-screen">
+    <div class="browser-outer">
+      <div class="browser-inner">
+        <div class="b-chrome">
+          <div class="b-dots"><div class="b-dot red"></div><div class="b-dot yellow"></div><div class="b-dot green"></div></div>
+          <div class="b-addr"><svg width="10" height="10" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg> sixt.com</div>
+        </div>
+        <div class="s-banderole"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FF5000"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+          SAVE 15% on Midweek rentals!&nbsp; <a>Apply Discount</a></div>
+        <div style="position:relative;">
+          <div class="s-hero"><img class="s-hero-img" src="promo-bmw.png" alt=""><div class="s-hero-grad"></div></div>
+          <div style="position:absolute;top:0;left:0;right:0;">
+            <div class="s-header">
+              <div style="display:flex;align-items:center;gap:16px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                <div class="s-logo">SIXT</div>
+              </div>
+              <div class="s-nav">
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Manage bookings</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg> EN / €</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+              </div>
+            </div>
+            <div class="s-ibe-wrap">
+              <div class="s-ibe">
+                <!-- I: "View / edit booking" as a ghost chip alongside the type tabs -->
+                <div class="s-ibe-tabs">
+                  <div class="s-tab active"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Car</div>
+                  <div class="s-tab"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg> Trucks</div>
+                  <div class="s-tab-spacer"></div>
+                  <div class="s-tab-ghost">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    View / edit my booking
+                  </div>
+                </div>
+                <div class="s-fields-row">
+                  <div class="s-field">
+                    <div class="s-field-lbl">Pick-up &amp; return</div>
+                    <div class="s-field-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Munich Airport</div>
+                  </div>
+                  <div class="s-field">
+                    <div class="s-field-btn ph ret"><svg width="24" height="24" viewBox="0 0 24 24" fill="#FF5000"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Different return location</div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Pick-up date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>22 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Return date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>25 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <button class="s-cta">Show Cars</button>
+                </div>
+                <!-- I: age stays in footer, subtle -->
+                <div class="s-ibe-bottom" style="justify-content:space-between;">
+                  <a>Apply corporate rate</a>
+                  <div class="age-footer-c">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    Driver age: <span class="v">25+</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     OPTION A — Full inline IBE field
+═══════════════════════════════════════════════════════ -->
+<div class="opt-section" id="opt-a">
+  <div class="opt-meta">
+    <div class="opt-tag-row">
+      <div class="opt-tag">A</div>
+      <div>
+        <div class="opt-title">Full IBE field</div>
+        <div class="opt-sub">Age as a standard form field</div>
+      </div>
+    </div>
+    <p class="opt-desc">Driver age is a full, visible field in the IBE form — same visual weight as location and dates. Users must interact with it before searching.</p>
+    <div class="opt-pills">
+      <span class="pill r">Highest friction</span>
+      <span class="pill g">Most compliant</span>
+      <span class="pill gr">Homepage</span>
+    </div>
+    <p class="opt-note">Best for markets where legal explicitness is required. Expect 8–12% conversion drop based on historical A/B data.</p>
+  </div>
+  <div class="opt-screen">
+    <div class="browser-outer">
+      <div class="browser-inner">
+        <div class="b-chrome">
+          <div class="b-dots"><div class="b-dot red"></div><div class="b-dot yellow"></div><div class="b-dot green"></div></div>
+          <div class="b-addr">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+            sixt.com
+          </div>
+        </div>
+        <div class="s-banderole"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FF5000"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+          SAVE 15% on Midweek rentals!&nbsp; <a>Apply Discount</a></div>
+        <div style="position:relative;">
+          <div class="s-hero">
+            <img class="s-hero-img" src="promo-bmw.png" alt="">
+            <div class="s-hero-grad"></div>
+          </div>
+          <div style="position:absolute;top:0;left:0;right:0;">
+            <div class="s-header">
+              <div style="display:flex;align-items:center;gap:16px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                <div class="s-logo">SIXT</div>
+              </div>
+              <div class="s-nav">
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Manage bookings</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg> EN / €</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+              </div>
+            </div>
+            <div class="s-ibe-wrap">
+              <div class="s-ibe">
+                <div class="s-ibe-tabs">
+                  <div class="s-tab active"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Car</div>
+                  <div class="s-tab"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg> Trucks</div>
+                  <div class="s-tab-spacer"></div>
+                  <div class="s-tab-link">View / edit my booking</div>
+                </div>
+                <!-- ALL FIELDS IN ONE ROW — per Figma layout_COZ6E2 -->
+                <div class="s-fields-row">
+                  <div class="s-field">
+                    <div class="s-field-lbl">Pick-up &amp; return</div>
+                    <div class="s-field-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Munich Airport</div>
+                  </div>
+                  <div class="s-field">
+                    <div class="s-field-btn ph ret"><svg width="24" height="24" viewBox="0 0 24 24" fill="#FF5000"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Different return location</div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Pick-up date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>22 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Return date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>25 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <!-- AGE FIELD A: full equal-weight field in same row -->
+                  <div class="age-field-a">
+                    <div class="s-field-lbl">Driver age</div>
+                    <button class="age-btn-a"><span>25+</span><svg width="16" height="16" viewBox="0 0 24 24" fill="#C9C9CF"><path d="M7 10l5 5 5-5z"/></svg></button>
+                  </div>
+                  <button class="s-cta">Show Cars</button>
+                </div>
+                <div class="s-ibe-bottom"><a>Apply corporate rate</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     OPTION B — Subtle row below IBE
+═══════════════════════════════════════════════════════ -->
+<div class="opt-section" id="opt-b">
+  <div class="opt-meta">
+    <div class="opt-tag-row">
+      <div class="opt-tag">B</div>
+      <div>
+        <div class="opt-title">Subtle row</div>
+        <div class="opt-sub">Pre-selected, muted below the form</div>
+      </div>
+    </div>
+    <p class="opt-desc">Age is shown as a muted, secondary line under the IBE form — pre-selected at 25+. Most users won't notice it; those who need to change it can.</p>
+    <div class="opt-pills">
+      <span class="pill g">Low friction</span>
+      <span class="pill y">Moderate compliance</span>
+      <span class="pill gr">Homepage</span>
+    </div>
+    <p class="opt-note">Current approach in the existing prototype. Good balance for most markets. Easily missed by regulators who require explicit collection.</p>
+  </div>
+  <div class="opt-screen">
+    <div class="browser-outer">
+      <div class="browser-inner">
+        <div class="b-chrome">
+          <div class="b-dots"><div class="b-dot red"></div><div class="b-dot yellow"></div><div class="b-dot green"></div></div>
+          <div class="b-addr"><svg width="10" height="10" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg> sixt.com</div>
+        </div>
+        <div class="s-banderole"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FF5000"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+          SAVE 15% on Midweek rentals!&nbsp; <a>Apply Discount</a></div>
+        <div style="position:relative;">
+          <div class="s-hero">
+            <img class="s-hero-img" src="promo-bmw.png" alt="">
+            <div class="s-hero-grad"></div>
+          </div>
+          <div style="position:absolute;top:0;left:0;right:0;">
+            <div class="s-header">
+              <div style="display:flex;align-items:center;gap:16px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                <div class="s-logo">SIXT</div>
+              </div>
+              <div class="s-nav">
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Manage bookings</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg> EN / €</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+              </div>
+            </div>
+            <div class="s-ibe-wrap">
+              <div class="s-ibe">
+                <div class="s-ibe-tabs">
+                  <div class="s-tab active"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Car</div>
+                  <div class="s-tab"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg> Trucks</div>
+                  <div class="s-tab-spacer"></div>
+                  <div class="s-tab-link">View / edit my booking</div>
+                </div>
+                <div class="s-fields-row">
+                  <div class="s-field">
+                    <div class="s-field-lbl">Pick-up &amp; return</div>
+                    <div class="s-field-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Munich Airport</div>
+                  </div>
+                  <div class="s-field">
+                    <div class="s-field-btn ph ret"><svg width="24" height="24" viewBox="0 0 24 24" fill="#FF5000"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Different return location</div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Pick-up date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>22 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Return date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>25 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <!-- CTA + age stacked; age is absolute so CTA aligns with other fields -->
+                  <div style="position:relative;flex-shrink:0;">
+                    <button class="s-cta">Show Cars</button>
+                    <!-- AGE ROW B: subtle, muted, directly under CTA -->
+                    <div class="age-row-b" style="position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#828287"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                      Driver age: <span class="v">+25</span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#828287"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="s-ibe-bottom"><a>Apply corporate rate</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     OPTION D — IBE footer line
+═══════════════════════════════════════════════════════ -->
+<div class="opt-section" id="opt-d">
+  <div class="opt-meta">
+    <div class="opt-tag-row">
+      <div class="opt-tag">D</div>
+      <div>
+        <div class="opt-title">IBE footer line</div>
+        <div class="opt-sub">Age embedded in the card's secondary bar</div>
+      </div>
+    </div>
+    <p class="opt-desc">The IBE form stays completely untouched. Age is shown as a small muted control on the right side of the existing "Apply corporate rate" footer row — no extra rows, no extra height.</p>
+    <div class="opt-pills">
+      <span class="pill g">Zero form friction</span>
+      <span class="pill y">Moderate compliance</span>
+      <span class="pill gr">Homepage</span>
+    </div>
+    <p class="opt-note">Maximally discreet — piggybacks on existing secondary UI. Most users will never notice it; those who do can tap to change. Regulators can see it is present.</p>
+  </div>
+  <div class="opt-screen">
+    <div class="browser-outer">
+      <div class="browser-inner">
+        <div class="b-chrome">
+          <div class="b-dots"><div class="b-dot red"></div><div class="b-dot yellow"></div><div class="b-dot green"></div></div>
+          <div class="b-addr"><svg width="10" height="10" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg> sixt.com</div>
+        </div>
+        <div class="s-banderole"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FF5000"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+          SAVE 15% on Midweek rentals!&nbsp; <a>Apply Discount</a></div>
+        <div style="position:relative;">
+          <div class="s-hero">
+            <img class="s-hero-img" src="promo-bmw.png" alt="">
+            <div class="s-hero-grad"></div>
+          </div>
+          <div style="position:absolute;top:0;left:0;right:0;">
+            <div class="s-header">
+              <div style="display:flex;align-items:center;gap:16px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                <div class="s-logo">SIXT</div>
+              </div>
+              <div class="s-nav">
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Manage bookings</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg> EN / €</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+              </div>
+            </div>
+            <div class="s-ibe-wrap">
+              <div class="s-ibe">
+                <div class="s-ibe-tabs">
+                  <div class="s-tab active"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Car</div>
+                  <div class="s-tab"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg> Trucks</div>
+                  <div class="s-tab-spacer"></div>
+                  <div class="s-tab-link">View / edit my booking</div>
+                </div>
+                <div class="s-fields-row">
+                  <div class="s-field">
+                    <div class="s-field-lbl">Pick-up &amp; return</div>
+                    <div class="s-field-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Munich Airport</div>
+                  </div>
+                  <div class="s-field">
+                    <div class="s-field-btn ph ret"><svg width="24" height="24" viewBox="0 0 24 24" fill="#FF5000"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Different return location</div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Pick-up date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>22 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Return date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>25 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <button class="s-cta">Show Cars</button>
+                </div>
+                <!-- AGE D: tucked into the existing footer bar, left side -->
+                <div class="s-ibe-bottom" style="justify-content:space-between;">
+                  <div class="age-footer-c">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    Driver age: <span class="v">25+</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                  </div>
+                  <a>Apply corporate rate</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     OPTION E — CTA button with age label
+═══════════════════════════════════════════════════════ -->
+<div class="opt-section" id="opt-e">
+  <div class="opt-meta">
+    <div class="opt-tag-row">
+      <div class="opt-tag">E</div>
+      <div>
+        <div class="opt-title">CTA button label</div>
+        <div class="opt-sub">Age confirmed on the submit button</div>
+      </div>
+    </div>
+    <p class="opt-desc">The search button itself confirms the assumed age: "Show Cars" with a subtitle "Driver age: 25+". The age is acknowledged inline without any separate UI element — no change affordance.</p>
+    <div class="opt-pills">
+      <span class="pill g">Minimal visual noise</span>
+      <span class="pill y">Less obvious</span>
+      <span class="pill gr">Homepage</span>
+    </div>
+    <p class="opt-note">Creative approach — age is tied directly to the action. May be overlooked by fast users. Clicking "change" on the label opens a small popover.</p>
+  </div>
+  <div class="opt-screen">
+    <div class="browser-outer">
+      <div class="browser-inner">
+        <div class="b-chrome">
+          <div class="b-dots"><div class="b-dot red"></div><div class="b-dot yellow"></div><div class="b-dot green"></div></div>
+          <div class="b-addr"><svg width="10" height="10" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg> sixt.com</div>
+        </div>
+        <div class="s-banderole"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FF5000"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+          SAVE 15% on Midweek rentals!&nbsp; <a>Apply Discount</a></div>
+        <div style="position:relative;">
+          <div class="s-hero">
+            <img class="s-hero-img" src="promo-bmw.png" alt="">
+            <div class="s-hero-grad"></div>
+          </div>
+          <div style="position:absolute;top:0;left:0;right:0;">
+            <div class="s-header">
+              <div style="display:flex;align-items:center;gap:16px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                <div class="s-logo">SIXT</div>
+              </div>
+              <div class="s-nav">
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Manage bookings</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg> EN / €</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+              </div>
+            </div>
+            <div class="s-ibe-wrap">
+              <div class="s-ibe">
+                <div class="s-ibe-tabs">
+                  <div class="s-tab active"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Car</div>
+                  <div class="s-tab"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg> Trucks</div>
+                  <div class="s-tab-spacer"></div>
+                  <div class="s-tab-link">View / edit my booking</div>
+                </div>
+                <div class="s-fields-row">
+                  <div class="s-field">
+                    <div class="s-field-lbl">Pick-up &amp; return</div>
+                    <div class="s-field-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Munich Airport</div>
+                  </div>
+                  <div class="s-field">
+                    <div class="s-field-btn ph ret"><svg width="24" height="24" viewBox="0 0 24 24" fill="#FF5000"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Different return location</div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Pick-up date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>22 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Return date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>25 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <button class="s-cta-e">
+                    <div class="cta-e-main">Show Cars</div>
+                    <div class="cta-e-sub">Driver age: 25+</div>
+                  </button>
+                </div>
+                <div class="s-ibe-bottom"><a>Apply corporate rate</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     OPTION F — Age in header nav
+═══════════════════════════════════════════════════════ -->
+<div class="opt-section" id="opt-f">
+  <div class="opt-meta">
+    <div class="opt-tag-row">
+      <div class="opt-tag">F</div>
+      <div>
+        <div class="opt-title">Header navigation</div>
+        <div class="opt-sub">Age filter next to login in the top bar</div>
+      </div>
+    </div>
+    <p class="opt-desc">The IBE stays completely clean. A small "Age: 25+ ▾" control sits in the global header navigation next to the account icon — always visible, persistent across the whole session.</p>
+    <div class="opt-pills">
+      <span class="pill g">Zero IBE friction</span>
+      <span class="pill g">Always visible</span>
+      <span class="pill gr">Homepage</span>
+    </div>
+    <p class="opt-note">Good for markets requiring persistent disclosure. The age stays set globally — no need to re-enter it on each search. Relies on users noticing the header control.</p>
+  </div>
+  <div class="opt-screen">
+    <div class="browser-outer">
+      <div class="browser-inner">
+        <div class="b-chrome">
+          <div class="b-dots"><div class="b-dot red"></div><div class="b-dot yellow"></div><div class="b-dot green"></div></div>
+          <div class="b-addr"><svg width="10" height="10" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg> sixt.com</div>
+        </div>
+        <div class="s-banderole"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FF5000"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+          SAVE 15% on Midweek rentals!&nbsp; <a>Apply Discount</a></div>
+        <div style="position:relative;">
+          <div class="s-hero">
+            <img class="s-hero-img" src="promo-bmw.png" alt="">
+            <div class="s-hero-grad"></div>
+          </div>
+          <div style="position:absolute;top:0;left:0;right:0;">
+            <!-- OPTION F: header has age control next to account -->
+            <div class="s-header">
+              <div style="display:flex;align-items:center;gap:16px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                <div class="s-logo">SIXT</div>
+              </div>
+              <div class="s-nav">
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Manage bookings</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg> EN / €</div>
+                <!-- AGE E: compact nav control -->
+                <div class="s-nav-item age-nav-ctrl">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                  Age: 25+
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                </div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+              </div>
+            </div>
+            <div class="s-ibe-wrap">
+              <div class="s-ibe">
+                <div class="s-ibe-tabs">
+                  <div class="s-tab active"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Car</div>
+                  <div class="s-tab"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg> Trucks</div>
+                  <div class="s-tab-spacer"></div>
+                  <div class="s-tab-link">View / edit my booking</div>
+                </div>
+                <div class="s-fields-row">
+                  <div class="s-field">
+                    <div class="s-field-lbl">Pick-up &amp; return</div>
+                    <div class="s-field-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Munich Airport</div>
+                  </div>
+                  <div class="s-field">
+                    <div class="s-field-btn ph ret"><svg width="24" height="24" viewBox="0 0 24 24" fill="#FF5000"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Different return location</div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Pick-up date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>22 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Return date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>25 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <button class="s-cta">Show Cars</button>
+                </div>
+                <div class="s-ibe-bottom"><a>Apply corporate rate</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     OPTION G — Utility row (booking + age between form and footer)
+═══════════════════════════════════════════════════════ -->
+<div class="opt-section" id="opt-g">
+  <div class="opt-meta">
+    <div class="opt-tag-row">
+      <div class="opt-tag">G</div>
+      <div>
+        <div class="opt-title">Active tab badge</div>
+        <div class="opt-sub">Age embedded in the selected "Car" chip</div>
+      </div>
+    </div>
+    <p class="opt-desc">The active tab chip reads "Car · 25+" — age is encoded directly into the search context label. No extra rows, no footer elements. The form is completely clean; the IBE card is identical to today except the active chip carries the age assumption.</p>
+    <div class="opt-pills">
+      <span class="pill g">Zero added elements</span>
+      <span class="pill g">Contextually logical</span>
+      <span class="pill gr">Homepage</span>
+    </div>
+    <p class="opt-note">Age feels like part of "what I'm searching for" rather than a compliance checkbox. Most users will read it as metadata. The muted separator and lighter weight make it clearly secondary to "Car".</p>
+  </div>
+  <div class="opt-screen">
+    <div class="browser-outer">
+      <div class="browser-inner">
+        <div class="b-chrome">
+          <div class="b-dots"><div class="b-dot red"></div><div class="b-dot yellow"></div><div class="b-dot green"></div></div>
+          <div class="b-addr"><svg width="10" height="10" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg> sixt.com</div>
+        </div>
+        <div class="s-banderole"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FF5000"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+          SAVE 15% on Midweek rentals!&nbsp; <a>Apply Discount</a></div>
+        <div style="position:relative;">
+          <div class="s-hero"><img class="s-hero-img" src="promo-bmw.png" alt=""><div class="s-hero-grad"></div></div>
+          <div style="position:absolute;top:0;left:0;right:0;">
+            <div class="s-header">
+              <div style="display:flex;align-items:center;gap:16px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                <div class="s-logo">SIXT</div>
+              </div>
+              <div class="s-nav">
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Manage bookings</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg> EN / €</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+              </div>
+            </div>
+            <div class="s-ibe-wrap">
+              <div class="s-ibe">
+                <!-- G: age embedded in both tab chips, with dropdown arrow -->
+                <div class="s-ibe-tabs">
+                  <div class="s-tab active">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>
+                    Car
+                    <span style="opacity:0.55;font-weight:400;margin-left:2px;display:inline-flex;align-items:center;gap:1px;">· 25+<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.7;"><path d="M7 10l5 5 5-5z"/></svg></span>
+                  </div>
+                  <div class="s-tab">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>
+                    Trucks
+                    <span style="opacity:0.45;font-weight:400;margin-left:2px;display:inline-flex;align-items:center;gap:1px;">· 25+<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.7;"><path d="M7 10l5 5 5-5z"/></svg></span>
+                  </div>
+                  <div class="s-tab-spacer"></div>
+                  <div class="s-tab-link">View / edit my booking</div>
+                </div>
+                <div class="s-fields-row">
+                  <div class="s-field">
+                    <div class="s-field-lbl">Pick-up &amp; return</div>
+                    <div class="s-field-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Munich Airport</div>
+                  </div>
+                  <div class="s-field">
+                    <div class="s-field-btn ph ret"><svg width="24" height="24" viewBox="0 0 24 24" fill="#FF5000"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Different return location</div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Pick-up date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>22 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Return date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>25 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <button class="s-cta">Show Cars</button>
+                </div>
+                <div class="s-ibe-bottom"><a>Apply corporate rate</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     OPTION H — Footer trio (booking, corporate, age all in one bar)
+═══════════════════════════════════════════════════════ -->
+<div class="opt-section" id="opt-h">
+  <div class="opt-meta">
+    <div class="opt-tag-row">
+      <div class="opt-tag">H</div>
+      <div>
+        <div class="opt-title">Footer trio</div>
+        <div class="opt-sub">All secondary actions in a single footer bar</div>
+      </div>
+    </div>
+    <p class="opt-desc">The IBE card footer consolidates all three secondary elements into one bar: "View / edit my booking" · "Apply corporate rate" · "Driver age: 25+". The form is completely clean — no extra rows anywhere.</p>
+    <div class="opt-pills">
+      <span class="pill g">Zero form friction</span>
+      <span class="pill g">Integrated feel</span>
+      <span class="pill gr">Homepage</span>
+    </div>
+    <p class="opt-note">All secondary affordances live in a single consistent place. Booking management and age are peers — neither is more prominent. Relies on users scanning the footer.</p>
+  </div>
+  <div class="opt-screen">
+    <div class="browser-outer">
+      <div class="browser-inner">
+        <div class="b-chrome">
+          <div class="b-dots"><div class="b-dot red"></div><div class="b-dot yellow"></div><div class="b-dot green"></div></div>
+          <div class="b-addr"><svg width="10" height="10" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg> sixt.com</div>
+        </div>
+        <div class="s-banderole"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FF5000"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+          SAVE 15% on Midweek rentals!&nbsp; <a>Apply Discount</a></div>
+        <div style="position:relative;">
+          <div class="s-hero"><img class="s-hero-img" src="promo-bmw.png" alt=""><div class="s-hero-grad"></div></div>
+          <div style="position:absolute;top:0;left:0;right:0;">
+            <div class="s-header">
+              <div style="display:flex;align-items:center;gap:16px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                <div class="s-logo">SIXT</div>
+              </div>
+              <div class="s-nav">
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Manage bookings</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg> EN / €</div>
+                <div class="s-nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+              </div>
+            </div>
+            <div class="s-ibe-wrap">
+              <div class="s-ibe">
+                <div class="s-ibe-tabs">
+                  <div class="s-tab active"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.01 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Car</div>
+                  <div class="s-tab"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg> Trucks</div>
+                  <div class="s-tab-spacer"></div>
+                  <div class="s-tab-link">View / edit my booking</div>
+                </div>
+                <div class="s-fields-row">
+                  <div class="s-field">
+                    <div class="s-field-lbl">Pick-up &amp; return</div>
+                    <div class="s-field-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Munich Airport</div>
+                  </div>
+                  <div class="s-field">
+                    <div class="s-field-btn ph ret"><svg width="24" height="24" viewBox="0 0 24 24" fill="#FF5000"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Different return location</div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Pick-up date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-02-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>22 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <div class="s-date-group">
+                    <div class="s-field-lbl">Return date</div>
+                    <div class="s-date-pair">
+                      <div class="s-date-d"><svg width="24" height="24" viewBox="0 0 24 24" fill="#828287"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>25 Apr</div>
+                      <div class="s-date-t">12:00 PM</div>
+                    </div>
+                  </div>
+                  <button class="s-cta">Show Cars</button>
+                </div>
+                <!-- H: footer left-aligned with corporate rate + age; view/edit moved to tab top-right -->
+                <div class="s-ibe-bottom">
+                  <a>Apply corporate rate</a>
+                  <span style="margin:0 4px;color:#C9C9CF;">·</span>
+                  <div class="age-footer-c">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    Driver age: <span class="v">25+</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     OPTION J — Results page filter chip
+═══════════════════════════════════════════════════════ -->
+<div class="opt-section" id="opt-j">
+  <div class="opt-meta">
+    <div class="opt-tag-row">
+      <div class="opt-tag">J</div>
+      <div>
+        <div class="opt-title">Results filter chip</div>
+        <div class="opt-sub">Age as a pre-selected chip in results</div>
+      </div>
+    </div>
+    <p class="opt-desc">Age is not collected in the IBE at all. A pre-selected "Age 25+" chip appears in the results filter bar — users can change it there without leaving results.</p>
+    <div class="opt-pills">
+      <span class="pill g">Zero IBE friction</span>
+      <span class="pill y">Post-search only</span>
+      <span class="pill gr">Results page</span>
+    </div>
+    <p class="opt-note">Lowest impact on search conversion. Risk: some markets require age to be collected explicitly before car selection begins.</p>
+  </div>
+  <div class="opt-screen">
+    <div class="browser-outer">
+      <div class="browser-inner">
+        <div class="b-chrome">
+          <div class="b-dots"><div class="b-dot red"></div><div class="b-dot yellow"></div><div class="b-dot green"></div></div>
+          <div class="b-addr"><svg width="10" height="10" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg> sixt.com/en-de/car-hire/germany/munich-airport</div>
+        </div>
+        <div class="s-results-page">
+          <div class="s-header-scrolled">
+            <div class="s-logo-dark">SI<em>X</em>T</div>
+            <div class="s-nav-dark">
+              <div class="s-nav-dark-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93V19h2v.93c3.32-.48 5.95-3.11 6.43-6.43H18v-2h1.93C19.48 8.11 16.85 5.48 13.5 5v1.5h-2V5C8.15 5.52 5.52 8.15 5.07 11.5H7v2H5.07c.48 3.32 3.11 5.95 6.43 6.43z"/></svg> EN | €</div>
+              <div class="s-nav-dark-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Log in</div>
+            </div>
+          </div>
+          <!-- Compact IBE (no age field) -->
+          <div class="s-compact-ibe">
+            <div class="s-compact-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z"/></svg> Munich Airport</div>
+            <div class="s-compact-sep"></div>
+            <div class="s-compact-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg> Apr 22 12:00 PM – Apr 25 12:00 PM</div>
+            <button class="s-compact-cta">Search</button>
+          </div>
+          <!-- Filter row WITH Age chip -->
+          <div class="s-filter-row">
+            <div class="s-chip sort"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/></svg> Filter &amp; sort</div>
+            <div class="s-chip active">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              Age 25+
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+            </div>
+            <div class="s-chip">Electric</div>
+            <div class="s-chip">Hybrid</div>
+            <div class="s-chip">Automatic</div>
+            <div class="s-chip">Compact</div>
+            <div class="s-chip">Family</div>
+          </div>
+          <!-- Car list -->
+          <div class="s-car-list">
+            <div class="s-car-card">
+              <div class="s-car-badge">⭐ Recommended</div>
+              <div class="s-car-name">Toyota Yaris</div>
+              <div class="s-car-cat">Compact · Automatic</div>
+              <div class="s-car-price">€21.88</div>
+              <div class="s-car-day">per day · €152.49 total</div>
+              <button class="s-car-cta">Select</button>
+            </div>
+            <div class="s-car-card">
+              <div class="s-car-badge">Popular choice</div>
+              <div class="s-car-name">VW Golf</div>
+              <div class="s-car-cat">Compact · Automatic</div>
+              <div class="s-car-price">€26.50</div>
+              <div class="s-car-day">per day · €185.50 total</div>
+              <button class="s-car-cta">Select</button>
+            </div>
+            <div class="s-car-card">
+              <div class="s-car-badge">&nbsp;</div>
+              <div class="s-car-name">Audi Q5</div>
+              <div class="s-car-cat">SUV · Automatic</div>
+              <div class="s-car-price">€54.90</div>
+              <div class="s-car-day">per day · €384.30 total</div>
+              <button class="s-car-cta">Select</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     OPTION K — Results page slim banner
+═══════════════════════════════════════════════════════ -->
+<div class="opt-section" id="opt-k">
+  <div class="opt-meta">
+    <div class="opt-tag-row">
+      <div class="opt-tag">K</div>
+      <div>
+        <div class="opt-title">Results page banner</div>
+        <div class="opt-sub">Contextual notification after search</div>
+      </div>
+    </div>
+    <p class="opt-desc">Age is silently assumed (25+ default) and not shown in the IBE. After searching, a slim informational banner confirms the assumption and allows the user to change it.</p>
+    <div class="opt-pills">
+      <span class="pill g">Zero IBE friction</span>
+      <span class="pill r">Lowest compliance</span>
+      <span class="pill gr">Results page</span>
+    </div>
+    <p class="opt-note">Maximum conversion at the search step. High legal risk in several EU markets that require age to be explicitly confirmed before car selection.</p>
+  </div>
+  <div class="opt-screen">
+    <div class="browser-outer">
+      <div class="browser-inner">
+        <div class="b-chrome">
+          <div class="b-dots"><div class="b-dot red"></div><div class="b-dot yellow"></div><div class="b-dot green"></div></div>
+          <div class="b-addr"><svg width="10" height="10" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg> sixt.com/en-de/car-hire/germany/munich-airport</div>
+        </div>
+        <div class="s-results-page">
+          <div class="s-header-scrolled">
+            <div class="s-logo-dark">SI<em>X</em>T</div>
+            <div class="s-nav-dark">
+              <div class="s-nav-dark-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93V19h2v.93c3.32-.48 5.95-3.11 6.43-6.43H18v-2h1.93C19.48 8.11 16.85 5.48 13.5 5v1.5h-2V5C8.15 5.52 5.52 8.15 5.07 11.5H7v2H5.07c.48 3.32 3.11 5.95 6.43 6.43z"/></svg> EN | €</div>
+              <div class="s-nav-dark-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Log in</div>
+            </div>
+          </div>
+          <!-- Compact IBE (no age) -->
+          <div class="s-compact-ibe">
+            <div class="s-compact-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z"/></svg> Munich Airport</div>
+            <div class="s-compact-sep"></div>
+            <div class="s-compact-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg> Apr 22 12:00 PM – Apr 25 12:00 PM</div>
+            <button class="s-compact-cta">Search</button>
+          </div>
+          <!-- Filter row (no age chip) -->
+          <div class="s-filter-row">
+            <div class="s-chip sort"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/></svg> Filter &amp; sort</div>
+            <div class="s-chip">Electric</div>
+            <div class="s-chip">Hybrid</div>
+            <div class="s-chip">Automatic</div>
+            <div class="s-chip">Compact</div>
+            <div class="s-chip">Family</div>
+          </div>
+          <!-- AGE BANNER F: slim contextual notification -->
+          <div class="s-results-banner">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            Showing offers for drivers aged 25 or over — pricing may vary for younger drivers.
+            <a style="margin-left:auto;flex-shrink:0;">Change age</a>
+          </div>
+          <!-- Car list -->
+          <div class="s-car-list">
+            <div class="s-car-card">
+              <div class="s-car-badge">⭐ Recommended</div>
+              <div class="s-car-name">Toyota Yaris</div>
+              <div class="s-car-cat">Compact · Automatic</div>
+              <div class="s-car-price">€21.88</div>
+              <div class="s-car-day">per day · €152.49 total</div>
+              <button class="s-car-cta">Select</button>
+            </div>
+            <div class="s-car-card">
+              <div class="s-car-badge">Popular choice</div>
+              <div class="s-car-name">VW Golf</div>
+              <div class="s-car-cat">Compact · Automatic</div>
+              <div class="s-car-price">€26.50</div>
+              <div class="s-car-day">per day · €185.50 total</div>
+              <button class="s-car-cta">Select</button>
+            </div>
+            <div class="s-car-card">
+              <div class="s-car-badge">&nbsp;</div>
+              <div class="s-car-name">Audi Q5</div>
+              <div class="s-car-cat">SUV · Automatic</div>
+              <div class="s-car-price">€54.90</div>
+              <div class="s-car-day">per day · €384.30 total</div>
+              <button class="s-car-cta">Select</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* Active nav highlight on scroll */
+  const sections = ['opt-a','opt-b','opt-c','opt-d','opt-e','opt-f','opt-g','opt-h','opt-i','opt-j','opt-k'];
+  const links = document.querySelectorAll('.opt-nav a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const match = document.querySelector(`.opt-nav a[href="#${e.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+</script>
+</body>
+</html>
