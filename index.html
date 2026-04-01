@@ -2251,7 +2251,7 @@ html { scroll-behavior: smooth; }
   <div class="card-meta">
   <div class="card-label">Alt D</div>
   <div class="card-title">Collapsible accordion</div>
-  <div class="card-desc">Age hidden by default below a collapsed row. Tapping reveals an inline stepper. Zero footprint unless the user actively engages.</div>
+  <div class="card-desc">Driver age sits below a divider after "Apply corporate rate". Tapping the row opens a dropdown picker. No stepper — clean and minimal.</div>
   </div>
   <div class="phone">
     <div class="status-bar">
@@ -2310,18 +2310,13 @@ html { scroll-behavior: smooth; }
         <div class="btn-inner">
           <button class="cta-btn">Show offers</button>
           <span class="corp-link">Apply corporate rate</span>
-          <!-- AGE D: accordion (shown expanded) -->
-          <div class="age-accordion">
-            <div class="age-acc-trigger">
-              <span class="age-acc-left">Driver age</span>
-              <span class="age-acc-right">25+ <svg width="14" height="14" viewBox="0 0 24 24" fill="#8E8E93"><path d="M7 14l5-5 5 5z"/></svg></span>
-            </div>
-            <div class="age-acc-body">
-              <div class="stepper-btn">−</div>
-              <div class="stepper-val">25</div>
-              <div class="stepper-btn">+</div>
-            </div>
-            <div class="stepper-note">Young driver surcharge may apply under 25</div>
+          <!-- AGE D: dropdown row below divider -->
+          <div style="width:100%;border-top:1px solid #E5E5EA;margin-top:4px;padding-top:10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+            <span style="font-size:14px;font-weight:600;color:#828287;">Driver age</span>
+            <span style="display:flex;align-items:center;gap:4px;font-size:14px;font-weight:700;color:#1A1A1A;">
+              25+
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9C9CF"><path d="M7 10l5 5 5-5z"/></svg>
+            </span>
           </div>
         </div>
       </div>
