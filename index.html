@@ -96,6 +96,12 @@ html { scroll-behavior: smooth; }
   color: #1A1A1A;
 }
 
+/* ── App tab background ────────────────────────────────── */
+#tab-app {
+  background: #E8E8E8;
+  min-width: 1000px;
+}
+
 /* ── Mobile tab background ──────────────────────────────── */
 #tab-mobile {
   background: #F2F2F7;
@@ -887,6 +893,9 @@ html { scroll-behavior: smooth; }
     </button>
     <button class="tab-btn" data-tab="mobile">
       <span class="tab-btn-icon">📱</span> Mobile Web
+    </button>
+    <button class="tab-btn" data-tab="app">
+      <span class="tab-btn-icon">📲</span> App
     </button>
   </div>
 </div>
@@ -2937,6 +2946,1464 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
+
+
+<!-- ═══ APP TAB ══════════════════════════════════════════════ -->
+<div id="tab-app" class="tab-panel">
+<style>
+/* ─── App tab scoped styles ─────────────────────────────────── */
+.app-tab {
+  background: #E8E8E8;
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;
+  gap: 40px; padding: 32px 40px 60px; min-height: 100vh;
+}
+
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }.app-tab{
+    background: #E8E8E8;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Inter', sans-serif;
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;
+    gap: 40px; padding: 32px 40px 60px; min-height: 100vh;
+  }.app-tab .screen-label{
+    font-size: 11px; font-weight: 700; color: #888;
+    text-transform: uppercase; letter-spacing: 0.6px;
+    text-align: center; margin-bottom: 6px;
+  }.app-tab .screen-desc{
+    font-size: 12px; color: #aaa; text-align: center; margin-bottom: 10px;
+    max-width: 390px; line-height: 1.5;
+  }
+
+  /* ── Phone shell ── */
+  .phone {
+    width: 390px; height: 844px; background: #F2F2F7;
+    border-radius: 50px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.28), 0 0 0 1.5px #ccc;
+    overflow: hidden; display: flex; flex-direction: column;
+    position: relative; flex-shrink: 0;
+  }
+
+  /* ── Status bar ── */
+  .status-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 28px 8px; font-size: 15px; font-weight: 700; color: #fff;
+    flex-shrink: 0; position: absolute; top: 0; left: 0; right: 0; z-index: 2;
+  }.app-tab .status-icons{ display: flex; align-items: center; gap: 6px; }
+
+  /* ── Hero block ── */
+  .hero-block {
+    position: relative; flex-shrink: 0; height: 240px;
+    background: #111; overflow: hidden;
+  }.app-tab .hero-img{ width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }.app-tab .hero-gradient{
+    position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+    background: linear-gradient(to bottom, transparent, #F2F2F7);
+  }.app-tab .app-header-overlay{
+    position: absolute; top: 42px; left: 0; right: 0;
+    padding: 6px 20px; display: flex; align-items: center; justify-content: space-between; z-index: 3;
+  }.app-tab .sixt-logo{ font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -0.5px; }.app-tab .sixt-logo span{ font-style: italic; }.app-tab .profile-btn{
+    width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.45);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+
+  /* ── Scroll ── */
+  .scroll { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }.app-tab .scroll::-webkit-scrollbar{ display: none; }
+
+  /* ── IBE ── */
+  .ibe-wrap {
+    margin: 10px 16px 0; border-radius: 18px; overflow: hidden;
+    background: #fff; box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+  }.app-tab .ibe-tabs{ display: flex; align-items: center; padding: 12px 14px 0; gap: 6px; }.app-tab .ibe-tab{
+    display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 20px;
+    font-size: 14px; font-weight: 600; cursor: pointer; border: 1.5px solid transparent;
+  }.app-tab .ibe-tab.active{ background: #1A1A1A; color: #fff; border-color: #1A1A1A; }.app-tab .ibe-tab.inactive{ background: transparent; color: #636366; border-color: #E0E0E0; }.app-tab .ibe-close{
+    margin-left: auto; width: 28px; height: 28px; border-radius: 50%;
+    background: #F2F2F7; border: none; display: flex; align-items: center;
+    justify-content: center; cursor: pointer; font-size: 14px; color: #636366;
+  }.app-tab .ibe-fields{ padding: 10px 14px 0; display: flex; flex-direction: column; }.app-tab .ibe-field{
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 0; border-bottom: 1px solid #F0F0F0; cursor: pointer;
+  }.app-tab .ibe-field-icon{ color: #8E8E93; flex-shrink: 0; }.app-tab .ibe-field-icon.add{ color: #C7C7CC; }.app-tab .ibe-field-value{ font-size: 15px; color: #1A1A1A; font-weight: 500; flex: 1; }.app-tab .ibe-field-value.placeholder{ color: #C7C7CC; font-weight: 400; }.app-tab .ibe-date-row{
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 0; border-bottom: 1px solid #F0F0F0; cursor: pointer;
+  }.app-tab .ibe-date-icon{ color: #8E8E93; flex-shrink: 0; }.app-tab .ibe-date-text{ font-size: 15px; color: #1A1A1A; font-weight: 500; }.app-tab .ibe-cta-area{ padding: 12px 14px; }.app-tab .ibe-cta{
+    width: 100%; padding: 15px; background: #FF5500; border: none; border-radius: 12px;
+    color: #fff; font-size: 16px; font-weight: 700; cursor: pointer;
+  }.app-tab .ibe-payment{
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 0 14px 14px; font-size: 13px; color: #636366; font-weight: 500; cursor: pointer;
+  }
+
+  /* ── Misc ── */
+  .import-row {
+    margin: 10px 16px 0; background: #fff; border-radius: 14px; padding: 0 16px; min-height: 60px;
+    display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer;
+  }.app-tab .import-row-icon{
+    width: 36px; height: 36px; border-radius: 50%; background: #E8F8EE;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }.import-row-.app-tab{ flex: 1; }.app-tab .import-row-text{ font-size: 15px; font-weight: 700; color: #1A1A1A; }.app-tab .import-row-sub{ font-size: 13px; color: #8E8E93; font-weight: 400; margin-top: 2px; }.app-tab .section-title{ font-size: 20px; font-weight: 800; color: #1A1A1A; padding: 18px 16px 10px; letter-spacing: -0.3px; }.app-tab .promo-card{ margin: 0 16px; border-radius: 18px; overflow: hidden; background: #1A1A1A; cursor: pointer; }.app-tab .promo-img-area{ position: relative; height: 170px; background: #2a2a2a; overflow: hidden; }.app-tab .promo-badge{
+    position: absolute; top: 10px; left: 10px; background: #FF5500; color: #fff;
+    font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px;
+    display: flex; align-items: center; gap: 4px;
+  }.app-tab .promo-bottom{ padding: 14px 16px; }.app-tab .promo-sub{ font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500; margin-bottom: 2px; }.app-tab .promo-title{ font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }.app-tab .bottom-spacer{ height: 20px; }.app-tab .bottom-nav{
+    background: #F2F2F7; border-top: 1px solid #E5E5EA; padding: 8px 6px 18px;
+    display: flex; justify-content: space-around; align-items: flex-start; flex-shrink: 0;
+  }.app-tab .nav-item{ display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; flex: 1; }.app-tab .nav-icon-wrap{ width: 48px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 16px; }.app-tab .nav-icon-wrap.active{ background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }.app-tab .nav-label{ font-size: 10px; color: #636366; font-weight: 500; }.app-tab .nav-label.active{ color: #FF5500; font-weight: 600; }
+
+
+  /* ════════════════════════════════════════════
+     SHARED BOTTOM SHEET
+  ════════════════════════════════════════════ */
+  .age-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.45); z-index: 50;
+    display: none; align-items: flex-end; backdrop-filter: blur(2px);
+  }.app-tab .age-overlay.open{ display: flex; }.app-tab .age-sheet{
+    width: 100%; background: #fff; border-radius: 24px 24px 0 0;
+    padding: 12px 20px 32px;
+    animation: sheetUp 0.28s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  @keyframes sheetUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }.app-tab .age-handle{ width: 40px; height: 4px; border-radius: 2px; background: #E0E0E0; margin: 0 auto 18px; }.app-tab .age-sheet-title{ font-size: 17px; font-weight: 700; color: #1A1A1A; margin-bottom: 4px; }.app-tab .age-sheet-sub{ font-size: 13px; color: #8E8E93; line-height: 1.5; margin-bottom: 16px; }.app-tab .age-confirm{
+    width: 100%; padding: 15px; background: #FF5500; color: #fff;
+    border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 16px;
+  }
+
+  /* ════════════════════════════════════════════
+     ALT G — DARK IBE,
+.app-tab AGE BELOW CTA
+  ════════════════════════════════════════════ */
+  .ibe-dark{
+    margin: -4px 16px 0; border-radius: 18px; overflow: hidden;
+    background: #1C1C1E;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }.app-tab .ibe-dark .ibe-tabs{ padding: 12px 14px 0; }.app-tab .ibe-dark .ibe-tab.active{ background: #fff; color: #1A1A1A; border-color: #fff; }.app-tab .ibe-dark .ibe-tab.inactive{ color: rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.2); }.app-tab .ibe-dark .ibe-close{ background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }.app-tab .ibe-dark .ibe-field{ border-bottom-color: rgba(255,255,255,0.08); }.app-tab .ibe-dark .ibe-field-icon{ color: #FF5500; }.app-tab .ibe-dark .ibe-field-icon.add{ color: rgba(255,255,255,0.25); }.app-tab .ibe-dark .ibe-field-value{ color: #fff; font-weight: 600; }.app-tab .ibe-dark .ibe-field-value.placeholder{ color: rgba(255,255,255,0.3); font-weight: 400; }.app-tab .ibe-dark .ibe-field-right{ color: rgba(255,255,255,0.3); }.app-tab .ibe-dark .ibe-date-row{ border-bottom-color: rgba(255,255,255,0.08); }.app-tab .ibe-dark .ibe-date-icon{ color: #FF5500; }.app-tab .ibe-dark .ibe-date-text{ color: #fff; font-weight: 600; }
+
+  /* row below CTA: age + sign in */
+  .ibe-below-cta {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 14px 16px; gap: 10px;
+  }.app-tab .ibe-age-link{
+    display: flex; align-items: center; gap: 5px;
+    cursor: pointer;
+  }.app-tab .ibe-age-link-label{ font-size: 13px; color: rgba(255,255,255,0.45); font-weight: 500; }.app-tab .ibe-age-link-val{ font-size: 13px; color: rgba(255,255,255,0.9); font-weight: 700; }.app-tab .ibe-age-link-unit{ font-size: 13px; color: rgba(255,255,255,0.45); font-weight: 400; }.app-tab .ibe-age-link-chevron{ opacity: 0.4; }.app-tab .ibe-signin-link{
+    font-size: 13px; color: rgba(255,255,255,0.55); font-weight: 600;
+    text-decoration: underline; text-underline-offset: 2px; cursor: pointer;
+    white-space: nowrap;
+  }.app-tab .ibe-divider-dot{
+    width: 3px; height: 3px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); flex-shrink: 0;
+  }
+
+  /* dark home background */
+  .dark-home-bg { background: #111 !important; }
+
+  /* ════════════════════════════════════════════
+     ALT F — HEADER AGE CHIP (logged-out)
+  ════════════════════════════════════════════ */
+  .header-right { display: flex; align-items: center; gap: 8px; }.app-tab .header-age-chip{
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 20px; padding: 5px 11px;
+    cursor: pointer; transition: background 0.15s;
+    backdrop-filter: blur(4px);
+  }.app-tab .header-age-chip:active{ background: rgba(255,255,255,0.28); }.app-tab .header-age-chip-label{ font-size: 12px; font-weight: 600; color: #fff; }.app-tab .header-age-chip-val{ font-size: 12px; font-weight: 700; color: #fff; }.app-tab .header-age-chip-chevron{ opacity: 0.7; }.app-tab .header-signin-btn{
+    display: flex; align-items: center; gap: 6px;
+    background: #FF5500; border: none; border-radius: 20px;
+    padding: 6px 14px; cursor: pointer;
+    font-size: 13px; font-weight: 700; color: #fff;
+    white-space: nowrap;
+  }
+
+  /* ════════════════════════════════════════════
+     ACCORDION ROW (Alt D & E)
+  ════════════════════════════════════════════ */
+  .acc-row {
+    border-bottom: 1px solid #F0F0F0;
+  }.app-tab .acc-header{
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; cursor: pointer; user-select: none;
+  }.app-tab .acc-header-left{ display: flex; align-items: center; gap: 8px; }.app-tab .acc-header-title{ font-size: 15px; font-weight: 500; color: #1A1A1A; }.app-tab .acc-header-value{
+    font-size: 15px; font-weight: 700; color: #1A1A1A;
+  }.app-tab .acc-header-value.neutral{ color: #636366; font-weight: 500; }.app-tab .acc-chevron{
+    color: #C7C7CC; transition: transform 0.22s ease; flex-shrink: 0;
+  }.acc-.app-tab{
+    max-height: 0; opacity: 0; overflow: hidden;
+    transition: max-height 0.28s ease, opacity 0.2s ease;
+  }.acc-.app-tab-inner{ padding: 0 0 14px; }
+
+  /* inline drum inside accordion */
+  .acc-drum-wrap {
+    position: relative; height: 168px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    background: #F9F9F9; border-radius: 12px;
+  }.app-tab .acc-drum-fade-top,
+.app-tab .acc-drum-fade-bot{
+    position: absolute; left: 0; right: 0; height: 52px; z-index: 2; pointer-events: none;
+  }.app-tab .acc-drum-fade-top{ top: 0; background: linear-gradient(to bottom, #F9F9F9 20%, transparent); }.app-tab .acc-drum-fade-bot{ bottom: 0; background: linear-gradient(to top, #F9F9F9 20%, transparent); }.app-tab .acc-drum-selector{
+    position: absolute; left: 12px; right: 12px; top: 50%; transform: translateY(-50%);
+    height: 40px; border-radius: 8px; background: #fff;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.1); z-index: 1; pointer-events: none;
+  }.app-tab .acc-drum-scroll{
+    height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch; position: relative; z-index: 3;
+    width: 100%;
+  }.app-tab .acc-drum-scroll::-webkit-scrollbar{ display: none; }.app-tab .acc-drum-item{
+    height: 40px; display: flex; align-items: center; justify-content: center;
+    scroll-snap-align: center; font-size: 18px; font-weight: 600; color: #1A1A1A;
+    cursor: pointer; flex-shrink: 0;
+  }.app-tab .acc-drum-pad{ height: 64px; scroll-snap-align: none; flex-shrink: 0; }.app-tab .acc-surcharge{
+    text-align: center; font-size: 12px; font-weight: 600;
+    margin-top: 8px; min-height: 16px;
+  }.app-tab .acc-surcharge.good{ color: #30D158; }.app-tab .acc-surcharge.warn{ color: #FF9500; }.app-tab .acc-surcharge.bad{ color: #FF3B30; }
+
+  /* inline stepper inside accordion */
+  .acc-stepper-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #F9F9F9; border-radius: 12px; padding: 12px 16px;
+  }.app-tab .acc-stepper-lbl{ font-size: 13px; color: #636366; font-weight: 500; }.app-tab .acc-stepper-surcharge{ font-size: 11px; font-weight: 600; margin-top: 3px; }.app-tab .acc-stepper-surcharge.good{ color: #30D158; }.app-tab .acc-stepper-surcharge.warn{ color: #FF9500; }.app-tab .acc-stepper-surcharge.bad{ color: #FF3B30; }.app-tab .acc-stepper-controls{ display: flex; align-items: center; gap: 10px; }.app-tab .acc-step-btn{
+    width: 34px; height: 34px; border-radius: 50%;
+    background: #fff; border: 1.5px solid #E0E0E0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: #1A1A1A; font-weight: 300; cursor: pointer;
+    transition: background 0.1s; user-select: none;
+  }.app-tab .acc-step-btn:active{ background: #E5E5EA; }.app-tab .acc-step-btn.disabled{ opacity: 0.25; pointer-events: none; }.app-tab .acc-step-val{ font-size: 22px; font-weight: 800; color: #1A1A1A; min-width: 40px; text-align: center; }
+
+  /* ── Drum / scroll picker ── */
+  .drum-wrap {
+    position: relative; height: 200px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }.app-tab .drum-fade-top,
+.app-tab .drum-fade-bot{
+    position: absolute; left: 0; right: 0; height: 68px; z-index: 2; pointer-events: none;
+  }.app-tab .drum-fade-top{ top: 0; background: linear-gradient(to bottom, #fff 30%, transparent); }.app-tab .drum-fade-bot{ bottom: 0; background: linear-gradient(to top, #fff 30%, transparent); }.app-tab .drum-selector{
+    position: absolute; left: 16px; right: 16px; top: 50%; transform: translateY(-50%);
+    height: 44px; border-radius: 10px; background: #F2F2F7; z-index: 1; pointer-events: none;
+  }.app-tab .drum-scroll{
+    height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch; position: relative; z-index: 3;
+  }.app-tab .drum-scroll::-webkit-scrollbar{ display: none; }.app-tab .drum-item{
+    height: 44px; display: flex; align-items: center; justify-content: center;
+    scroll-snap-align: center; font-size: 20px; font-weight: 600; color: #1A1A1A;
+    cursor: pointer; flex-shrink: 0;
+  }.app-tab .drum-item.dim{ color: #C7C7CC; font-size: 17px; font-weight: 500; }
+  /* padding items so first/last can scroll to center */
+  .drum-pad { height: 78px; scroll-snap-align: none; flex-shrink: 0; }
+
+  /* surcharge badge below drum */
+  .drum-surcharge {
+    text-align: center; font-size: 13px; font-weight: 600;
+    color: #FF9500; margin-top: 6px; min-height: 18px; transition: opacity 0.15s;
+  }.app-tab .drum-surcharge.good{ color: #30D158; }.app-tab .drum-surcharge.warn{ color: #FF9500; }.app-tab .drum-surcharge.bad{ color: #FF3B30; }
+
+
+  /* ════════════════════════════════════════════
+     ALT A — SUBTLE ROW → DRUM PICKER
+  ════════════════════════════════════════════ */
+  .ibe-age-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0 9px; border-bottom: 1px solid #F5F5F5; cursor: pointer;
+  }.app-tab .ibe-age-left{ display: flex; align-items: center; gap: 6px; }.app-tab .ibe-age-label{ font-size: 12px; font-weight: 500; color: #AEAEB2; }.app-tab .ibe-age-right{ display: flex; align-items: center; gap: 4px; }.app-tab .ibe-age-value{ font-size: 12px; font-weight: 700; color: #636366; }.app-tab .ibe-age-chevron{ color: #C7C7CC; }
+
+
+  /* ════════════════════════════════════════════
+     ALT B — INLINE STEPPER (exact age)
+  ════════════════════════════════════════════ */
+  .age-stepper-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px solid #F0F0F0;
+  }.app-tab .age-stepper-left{ display: flex; align-items: center; gap: 8px; }.app-tab .age-stepper-title{ font-size: 14px; font-weight: 600; color: #1A1A1A; }.app-tab .age-stepper-sub{ font-size: 11px; color: #AEAEB2; margin-top: 1px; }.app-tab .age-stepper-right{ display: flex; align-items: center; gap: 8px; }.app-tab .stepper-btn{
+    width: 30px; height: 30px; border-radius: 50%;
+    background: #F2F2F7; border: 1.5px solid #E0E0E0;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px; color: #1A1A1A; font-weight: 300; line-height: 1;
+    flex-shrink: 0; transition: background 0.1s; user-select: none;
+  }.app-tab .stepper-btn:active{ background: #E0E0E0; }.app-tab .stepper-btn.disabled{ opacity: 0.25; pointer-events: none; }.app-tab .stepper-val-wrap{ display: flex; flex-direction: column; align-items: center; min-width: 36px; }.app-tab .stepper-val{ font-size: 18px; font-weight: 700; color: #1A1A1A; }.app-tab .stepper-unit{ font-size: 10px; color: #AEAEB2; font-weight: 500; }
+
+
+  /* ════════════════════════════════════════════
+     ALT C — INLINE NUMBER BADGE (tap to edit)
+  ════════════════════════════════════════════ */
+  .age-badge-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 0; border-bottom: 1px solid #F0F0F0; cursor: pointer;
+  }.app-tab .age-badge-icon{ color: #8E8E93; flex-shrink: 0; }.app-tab .age-badge-label{ font-size: 15px; color: #1A1A1A; font-weight: 500; flex: 1; }.app-tab .age-badge{
+    display: flex; align-items: center; gap: 4px;
+    background: #F2F2F7; border-radius: 8px; padding: 5px 10px;
+    font-size: 15px; font-weight: 700; color: #1A1A1A; flex-shrink: 0;
+  }.app-tab .age-badge-edit{ font-size: 11px; color: #8E8E93; font-weight: 500; margin-left: 2px; }.app-tab .screen-preferred{
+    display: inline-block;
+    background: #FF5500; color: #fff;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    padding: 3px 12px; border-radius: 160px;
+    margin-bottom: 6px;
+  }
+
+</style>
+  <div class="app-tab">
+<!-- ════════════════════════════════════════════════════
+     ALT I — SAME AS ALT H BUT WITHOUT "YRS"
+════════════════════════════════════════════════════ -->
+<div>
+  <p class="screen-label">Alt I — Age inline (no "yrs")</p>
+  <p class="screen-preferred">★ Preferred option</p>
+<p class="screen-desc">Same as Alt H — age sits inline next to "Sign in or create account" — but without the "yrs" unit label.</p>
+  <div class="phone" id="phoneI">
+
+    <div class="hero-block" style="height:280px;">
+      <img class="hero-img" src="promo-bmw.png" alt="" style="object-position:center center;">
+      <div class="hero-gradient"></div>
+      <div class="status-bar" style="padding-top:16px;">
+        <span>19:14</span>
+        <div class="status-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#fff" opacity="0.5"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#fff" opacity="0.65"/><rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="#fff" opacity="0.85"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#fff"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2.5C10.2 2.5 12.2 3.4 13.6 4.9L15 3.5C13.2 1.6 10.7.5 8 .5S2.8 1.6 1 3.5L2.4 4.9C3.8 3.4 5.8 2.5 8 2.5z" fill="#fff"/><circle cx="8" cy="10" r="1.8" fill="#fff"/></svg>
+          <span style="font-size:12px;font-weight:700;">100</span>
+          <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#fff" stroke-opacity="0.5"/><rect x="1.5" y="1.5" width="20" height="10" rx="2.5" fill="#fff"/></svg>
+        </div>
+      </div>
+      <div class="app-header-overlay">
+        <div class="sixt-logo"><span>Si</span>XT</div>
+        <div class="profile-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="scroll">
+      <div style="margin:8px 16px 0;border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="display:flex;align-items:center;padding:14px 16px 0;gap:8px;">
+          <div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;background:#1A1A1A;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>
+            Cars
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;background:#F2F2F7;color:#636366;font-size:14px;font-weight:600;cursor:pointer;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>
+            Trucks
+          </div>
+        </div>
+        <div style="padding:6px 16px 0;">
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #F0F0F0;cursor:pointer;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E93"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <span style="font-size:15px;font-weight:500;color:#1A1A1A;flex:1;">Sydney Airport</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #F0F0F0;cursor:pointer;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C7C7CC"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <span style="font-size:15px;font-weight:400;color:#C7C7CC;flex:1;">Optional: Different Return station</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #F0F0F0;cursor:pointer;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E93"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+            <span style="font-size:15px;font-weight:500;color:#1A1A1A;">Apr 13 | 08:00 – Apr 16 | 00:00</span>
+          </div>
+        </div>
+        <div style="padding:10px 16px;">
+          <button style="width:100%;padding:16px;background:#FF5500;border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;">Show offers</button>
+        </div>
+        <!-- Age + Sign in row (no "yrs") -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 20px 16px;">
+          <div style="display:flex;align-items:center;gap:4px;cursor:pointer;" onclick="openAge('overlayI')">
+            <span style="font-size:13px;color:#8E8E93;font-weight:500;">Age:</span>
+            <span style="font-size:13px;color:#1A1A1A;font-weight:700;" id="ageDisplayI">30</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#C7C7CC"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <span style="font-size:12px;font-weight:500;color:#636366;text-decoration:underline;text-underline-offset:2px;cursor:pointer;">Sign in or create account</span>
+        </div>
+      </div>
+
+      <div class="section-title">Recommended for you</div>
+      <div class="promo-card">
+        <div class="promo-img-area"><div class="promo-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg> Special Offer</div></div>
+        <div class="promo-bottom"><div class="promo-sub">Save up to 15% on midweek rentals</div><div class="promo-title">SIXT Midweek Promo</div></div>
+      </div>
+      <div class="bottom-spacer"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item"><div class="nav-icon-wrap active"><svg width="22" height="22" viewBox="0 0 24 24" fill="#FF5500"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg></div><span class="nav-label active">Rent</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 20 L12 6 L21 20" stroke="#4A4A4A" stroke-width="1.5" fill="none" stroke-linejoin="round"/><line x1="7" y1="20" x2="17" y2="20" stroke="#4A4A4A" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="nav-label">Share</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 7.5 L12 14" stroke="#4A4A4A" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></div><span class="nav-label">Ride</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#4A4A4A" stroke-width="1.5"/><line x1="12" y1="12" x2="12" y2="7.5" stroke="#4A4A4A" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="12" x2="15.5" y2="12" stroke="#4A4A4A" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="nav-label">Subscribe</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg></div><span class="nav-label">Charge</span></div>
+    </div>
+
+    <!-- DRUM PICKER SHEET I -->
+    <div class="age-overlay" id="overlayI">
+      <div class="age-sheet">
+        <div class="age-handle"></div>
+        <div class="age-sheet-title">Driver age</div>
+        <div class="age-sheet-sub">Scroll to your age. Sign in to save it to your profile permanently.</div>
+        <div class="drum-wrap">
+          <div class="drum-fade-top"></div>
+          <div class="drum-fade-bot"></div>
+          <div class="drum-selector"></div>
+          <div class="drum-scroll" id="drumI"></div>
+        </div>
+        <div class="drum-surcharge" id="surchargeI"></div>
+        <button class="age-confirm" onclick="confirmDrum('I')">Confirm</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     ALT A — SUBTLE ROW (same footprint as today)
+                → opens DRUM/SCROLL PICKER with exact ages
+     Least intrusive option — small secondary row.
+     Familiar iOS picker handles all ages 18–99.
+════════════════════════════════════════════════════ -->
+<div>
+  <p class="screen-label">Alt A — Subtle row + scroll picker</p>
+  <p class="screen-desc">Same small footprint as today's design. Tap opens a scroll drum to pick exact age. Surcharge info updates live as you scroll.</p>
+  <div class="phone" id="phoneA">
+
+    <div class="hero-block">
+      <img class="hero-img" src="promo-bmw.png" alt="">
+      <div class="hero-gradient"></div>
+      <div class="status-bar">
+        <span>19:12</span>
+        <div class="status-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#fff" opacity="0.5"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#fff" opacity="0.65"/><rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="#fff" opacity="0.85"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#fff"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2.5C10.2 2.5 12.2 3.4 13.6 4.9L15 3.5C13.2 1.6 10.7.5 8 .5S2.8 1.6 1 3.5L2.4 4.9C3.8 3.4 5.8 2.5 8 2.5z" fill="#fff"/><circle cx="8" cy="10" r="1.8" fill="#fff"/></svg>
+          <span style="font-size:12px;font-weight:700;">100</span>
+          <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#fff" stroke-opacity="0.5"/><rect x="1.5" y="1.5" width="20" height="10" rx="2.5" fill="#fff"/></svg>
+        </div>
+      </div>
+      <div class="app-header-overlay">
+        <div class="sixt-logo"><span>Si</span>XT</div>
+        <div class="profile-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="scroll">
+      <div class="ibe-wrap">
+        <div class="ibe-tabs">
+          <div class="ibe-tab active"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Cars</div>
+          <div class="ibe-tab inactive">Trucks</div>
+          <button class="ibe-close">✕</button>
+        </div>
+        <div class="ibe-fields">
+          <div class="ibe-field">
+            <div class="ibe-field-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>
+            <div class="ibe-field-value">Munich Airport</div>
+          </div>
+          <div class="ibe-field">
+            <div class="ibe-field-icon add"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+            <div class="ibe-field-value placeholder">Optional: different drop-off</div>
+          </div>
+          <div class="ibe-date-row">
+            <div class="ibe-date-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div>
+            <div class="ibe-date-text">Apr 10 | 1:00 PM – Apr 14 | 09:00 AM</div>
+          </div>
+          <!-- subtle age row -->
+          <div class="ibe-age-row" onclick="openAge('overlayA')">
+            <div class="ibe-age-left">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#AEAEB2"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              <span class="ibe-age-label">Driver age:</span>
+            </div>
+            <div class="ibe-age-right">
+              <span class="ibe-age-value" id="ageDisplayA">30</span>
+              <svg class="ibe-age-chevron" width="12" height="12" viewBox="0 0 24 24" fill="#C7C7CC"><path d="M7 10l5 5 5-5z"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="ibe-cta-area"><button class="ibe-cta">Show Cars</button></div>
+        <div class="ibe-payment">
+          <span style="text-decoration:underline;text-underline-offset:2px;">Sign in or create account</span>
+        </div>
+      </div>
+      <div class="import-row">
+        <div class="import-row-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#2BAE66"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+        <div class="import-row-body"><div class="import-row-text">Import Booking</div><div class="import-row-sub">from another site</div></div>
+        <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#C7C7CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="section-title">Exclusive for You</div>
+      <div class="promo-card">
+        <div class="promo-img-area"><div class="promo-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg> Special Offer</div></div>
+        <div class="promo-bottom"><div class="promo-sub">Save up to 25% on Premium Cars</div><div class="promo-title">Luxury and Looks for Less</div></div>
+      </div>
+      <div class="bottom-spacer"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item"><div class="nav-icon-wrap active"><svg width="22" height="22" viewBox="0 0 24 24" fill="#FF5500"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg></div><span class="nav-label active">Rent</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><rect x="5" y="3" width="14" height="18" rx="2" stroke="#4A4A4A" stroke-width="1.5" fill="none"/><line x1="8" y1="8" x2="16" y2="8" stroke="#4A4A4A" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="12" x2="16" y2="12" stroke="#4A4A4A" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="nav-label">Trips</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 20 L12 6 L21 20" stroke="#4A4A4A" stroke-width="1.5" fill="none" stroke-linejoin="round"/><line x1="7" y1="20" x2="17" y2="20" stroke="#4A4A4A" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="nav-label">Share</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 7.5 L12 14" stroke="#4A4A4A" stroke-width="1.8" stroke-linecap="round"/></svg></div><span class="nav-label">Ride</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#4A4A4A" stroke-width="1.5"/><line x1="12" y1="12" x2="12" y2="7.5" stroke="#4A4A4A" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="12" x2="15.5" y2="12" stroke="#4A4A4A" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="nav-label">Subscribe</span></div>
+    </div>
+
+    <!-- DRUM PICKER SHEET A -->
+    <div class="age-overlay" id="overlayA">
+      <div class="age-sheet">
+        <div class="age-handle"></div>
+        <div class="age-sheet-title">Driver age</div>
+        <div class="age-sheet-sub">Scroll to your age — fees and available cars update automatically.</div>
+        <div class="drum-wrap">
+          <div class="drum-fade-top"></div>
+          <div class="drum-fade-bot"></div>
+          <div class="drum-selector"></div>
+          <div class="drum-scroll" id="drumA"></div>
+        </div>
+        <div class="drum-surcharge" id="surchargeA"></div>
+        <button class="age-confirm" onclick="confirmDrum('A')">Confirm</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════
+     ALT B — INLINE EXACT-AGE STEPPER
+     Compact +/− stepper with exact age.
+     No bottom sheet — change age without leaving form.
+     Sub-label updates live to show any surcharge.
+════════════════════════════════════════════════════ -->
+<div>
+  <p class="screen-label">Alt B — Inline stepper</p>
+  <p class="screen-desc">Tap + or − to change exact age directly in the form. No sheet, no extra step. Surcharge hint updates live.</p>
+  <div class="phone" id="phoneB">
+
+    <div class="hero-block">
+      <img class="hero-img" src="promo-bmw.png" alt="">
+      <div class="hero-gradient"></div>
+      <div class="status-bar">
+        <span>19:12</span>
+        <div class="status-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#fff" opacity="0.5"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#fff" opacity="0.65"/><rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="#fff" opacity="0.85"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#fff"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2.5C10.2 2.5 12.2 3.4 13.6 4.9L15 3.5C13.2 1.6 10.7.5 8 .5S2.8 1.6 1 3.5L2.4 4.9C3.8 3.4 5.8 2.5 8 2.5z" fill="#fff"/><circle cx="8" cy="10" r="1.8" fill="#fff"/></svg>
+          <span style="font-size:12px;font-weight:700;">100</span>
+          <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#fff" stroke-opacity="0.5"/><rect x="1.5" y="1.5" width="20" height="10" rx="2.5" fill="#fff"/></svg>
+        </div>
+      </div>
+      <div class="app-header-overlay">
+        <div class="sixt-logo"><span>Si</span>XT</div>
+        <div class="profile-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="scroll">
+      <div class="ibe-wrap">
+        <div class="ibe-tabs">
+          <div class="ibe-tab active"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Cars</div>
+          <div class="ibe-tab inactive">Trucks</div>
+          <button class="ibe-close">✕</button>
+        </div>
+        <div class="ibe-fields">
+          <div class="ibe-field">
+            <div class="ibe-field-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>
+            <div class="ibe-field-value">Munich Airport</div>
+          </div>
+          <div class="ibe-field">
+            <div class="ibe-field-icon add"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+            <div class="ibe-field-value placeholder">Optional: different drop-off</div>
+          </div>
+          <div class="ibe-date-row">
+            <div class="ibe-date-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div>
+            <div class="ibe-date-text">Apr 10 | 1:00 PM – Apr 14 | 09:00 AM</div>
+          </div>
+
+          <!-- INLINE STEPPER -->
+          <div class="age-stepper-row">
+            <div class="age-stepper-left">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              <div>
+                <div class="age-stepper-title">Driver age</div>
+                <div class="age-stepper-sub" id="stepSubB">Standard rate</div>
+              </div>
+            </div>
+            <div class="age-stepper-right">
+              <button class="stepper-btn" id="stepDownB" onclick="stepExact('B', -1)">−</button>
+              <div class="stepper-val-wrap">
+                <div class="stepper-val" id="stepValB">30</div>
+                <div class="stepper-unit">yrs</div>
+              </div>
+              <button class="stepper-btn" id="stepUpB" onclick="stepExact('B', 1)">+</button>
+            </div>
+          </div>
+
+        </div>
+        <div class="ibe-cta-area"><button class="ibe-cta">Show Cars</button></div>
+        <div class="ibe-payment">
+          <span style="text-decoration:underline;text-underline-offset:2px;">Sign in or create account</span>
+        </div>
+      </div>
+      <div class="import-row">
+        <div class="import-row-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#2BAE66"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+        <div class="import-row-body"><div class="import-row-text">Import Booking</div><div class="import-row-sub">from another site</div></div>
+        <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#C7C7CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="section-title">Exclusive for You</div>
+      <div class="promo-card">
+        <div class="promo-img-area"><div class="promo-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg> Special Offer</div></div>
+        <div class="promo-bottom"><div class="promo-sub">Save up to 25% on Premium Cars</div><div class="promo-title">Luxury and Looks for Less</div></div>
+      </div>
+      <div class="bottom-spacer"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item"><div class="nav-icon-wrap active"><svg width="22" height="22" viewBox="0 0 24 24" fill="#FF5500"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg></div><span class="nav-label active">Rent</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><rect x="5" y="3" width="14" height="18" rx="2" stroke="#4A4A4A" stroke-width="1.5" fill="none"/></svg></div><span class="nav-label">Trips</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 20 L12 6 L21 20" stroke="#4A4A4A" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg></div><span class="nav-label">Share</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 7.5 L12 14" stroke="#4A4A4A" stroke-width="1.8" stroke-linecap="round"/></svg></div><span class="nav-label">Ride</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#4A4A4A" stroke-width="1.5"/></svg></div><span class="nav-label">Subscribe</span></div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════
+     ALT C — INLINE BADGE (same row as location/dates)
+     Age appears as part of the form, visually
+     consistent with other fields but very compact.
+     Tap opens drum picker (same as Alt A).
+════════════════════════════════════════════════════ -->
+<div>
+  <p class="screen-label">Alt C — Inline field badge</p>
+  <p class="screen-desc">Age lives as a full IBE field row, visually consistent with location and dates. Tap opens the scroll drum. Feels native to the form.</p>
+  <div class="phone" id="phoneC">
+
+    <div class="hero-block">
+      <img class="hero-img" src="promo-bmw.png" alt="">
+      <div class="hero-gradient"></div>
+      <div class="status-bar">
+        <span>19:12</span>
+        <div class="status-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#fff" opacity="0.5"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#fff" opacity="0.65"/><rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="#fff" opacity="0.85"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#fff"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2.5C10.2 2.5 12.2 3.4 13.6 4.9L15 3.5C13.2 1.6 10.7.5 8 .5S2.8 1.6 1 3.5L2.4 4.9C3.8 3.4 5.8 2.5 8 2.5z" fill="#fff"/><circle cx="8" cy="10" r="1.8" fill="#fff"/></svg>
+          <span style="font-size:12px;font-weight:700;">100</span>
+          <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#fff" stroke-opacity="0.5"/><rect x="1.5" y="1.5" width="20" height="10" rx="2.5" fill="#fff"/></svg>
+        </div>
+      </div>
+      <div class="app-header-overlay">
+        <div class="sixt-logo"><span>Si</span>XT</div>
+        <div class="profile-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="scroll">
+      <div class="ibe-wrap">
+        <div class="ibe-tabs">
+          <div class="ibe-tab active"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Cars</div>
+          <div class="ibe-tab inactive">Trucks</div>
+          <button class="ibe-close">✕</button>
+        </div>
+        <div class="ibe-fields">
+          <div class="ibe-field">
+            <div class="ibe-field-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>
+            <div class="ibe-field-value">Munich Airport</div>
+          </div>
+          <div class="ibe-field">
+            <div class="ibe-field-icon add"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+            <div class="ibe-field-value placeholder">Optional: different drop-off</div>
+          </div>
+          <div class="ibe-date-row">
+            <div class="ibe-date-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div>
+            <div class="ibe-date-text">Apr 10 | 1:00 PM – Apr 14 | 09:00 AM</div>
+          </div>
+
+          <!-- BADGE FIELD ROW -->
+          <div class="age-badge-row" onclick="openAge('overlayC')" style="border-bottom:none;">
+            <div class="age-badge-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </div>
+            <div class="age-badge-label">Driver age</div>
+            <div class="age-badge">
+              <span id="ageDisplayC">30</span>
+              <span style="font-size:12px;color:#8E8E93;font-weight:400;">yrs</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#C7C7CC"><path d="M7 10l5 5 5-5z"/></svg>
+            </div>
+          </div>
+
+        </div>
+        <div class="ibe-cta-area"><button class="ibe-cta">Show Cars</button></div>
+        <div class="ibe-payment">
+          <span style="text-decoration:underline;text-underline-offset:2px;">Sign in or create account</span>
+        </div>
+      </div>
+      <div class="import-row">
+        <div class="import-row-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#2BAE66"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+        <div class="import-row-body"><div class="import-row-text">Import Booking</div><div class="import-row-sub">from another site</div></div>
+        <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#C7C7CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="section-title">Exclusive for You</div>
+      <div class="promo-card">
+        <div class="promo-img-area"><div class="promo-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg> Special Offer</div></div>
+        <div class="promo-bottom"><div class="promo-sub">Save up to 25% on Premium Cars</div><div class="promo-title">Luxury and Looks for Less</div></div>
+      </div>
+      <div class="bottom-spacer"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item"><div class="nav-icon-wrap active"><svg width="22" height="22" viewBox="0 0 24 24" fill="#FF5500"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg></div><span class="nav-label active">Rent</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><rect x="5" y="3" width="14" height="18" rx="2" stroke="#4A4A4A" stroke-width="1.5" fill="none"/></svg></div><span class="nav-label">Trips</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 20 L12 6 L21 20" stroke="#4A4A4A" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg></div><span class="nav-label">Share</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 7.5 L12 14" stroke="#4A4A4A" stroke-width="1.8" stroke-linecap="round"/></svg></div><span class="nav-label">Ride</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#4A4A4A" stroke-width="1.5"/></svg></div><span class="nav-label">Subscribe</span></div>
+    </div>
+
+    <!-- DRUM PICKER SHEET C -->
+    <div class="age-overlay" id="overlayC">
+      <div class="age-sheet">
+        <div class="age-handle"></div>
+        <div class="age-sheet-title">Driver age</div>
+        <div class="age-sheet-sub">Scroll to your age — fees and available cars update automatically.</div>
+        <div class="drum-wrap">
+          <div class="drum-fade-top"></div>
+          <div class="drum-fade-bot"></div>
+          <div class="drum-selector"></div>
+          <div class="drum-scroll" id="drumC"></div>
+        </div>
+        <div class="drum-surcharge" id="surchargeC"></div>
+        <button class="age-confirm" onclick="confirmDrum('C')">Confirm</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════
+     ALT D — ACCORDION ROW → INLINE DRUM PICKER
+     Inspired by Avis. The row lives in the IBE form,
+     collapsed by default showing current age.
+     Tap expands an inline scroll drum — no sheet,
+     no navigation away. Closes on confirm.
+════════════════════════════════════════════════════ -->
+<div>
+  <p class="screen-label">Alt D — Accordion + inline drum</p>
+  <p class="screen-desc">Tap "Driver's Age" to expand the row in-place. Scroll drum appears inline inside the IBE card — no bottom sheet needed.</p>
+  <div class="phone" id="phoneD">
+
+    <div class="hero-block">
+      <img class="hero-img" src="promo-bmw.png" alt="">
+      <div class="hero-gradient"></div>
+      <div class="status-bar">
+        <span>19:12</span>
+        <div class="status-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#fff" opacity="0.5"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#fff" opacity="0.65"/><rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="#fff" opacity="0.85"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#fff"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2.5C10.2 2.5 12.2 3.4 13.6 4.9L15 3.5C13.2 1.6 10.7.5 8 .5S2.8 1.6 1 3.5L2.4 4.9C3.8 3.4 5.8 2.5 8 2.5z" fill="#fff"/><circle cx="8" cy="10" r="1.8" fill="#fff"/></svg>
+          <span style="font-size:12px;font-weight:700;">100</span>
+          <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#fff" stroke-opacity="0.5"/><rect x="1.5" y="1.5" width="20" height="10" rx="2.5" fill="#fff"/></svg>
+        </div>
+      </div>
+      <div class="app-header-overlay">
+        <div class="sixt-logo"><span>Si</span>XT</div>
+        <div class="profile-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="scroll">
+      <div class="ibe-wrap">
+        <div class="ibe-tabs">
+          <div class="ibe-tab active"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Cars</div>
+          <div class="ibe-tab inactive">Trucks</div>
+          <button class="ibe-close">✕</button>
+        </div>
+        <div class="ibe-fields">
+          <div class="ibe-field">
+            <div class="ibe-field-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>
+            <div class="ibe-field-value">Munich Airport</div>
+          </div>
+          <div class="ibe-field">
+            <div class="ibe-field-icon add"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+            <div class="ibe-field-value placeholder">Optional: different drop-off</div>
+          </div>
+          <div class="ibe-date-row">
+            <div class="ibe-date-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div>
+            <div class="ibe-date-text">Apr 10 | 1:00 PM – Apr 14 | 09:00 AM</div>
+          </div>
+
+          <!-- ACCORDION ROW D -->
+          <div class="acc-row">
+            <div class="acc-header" onclick="toggleAccordion('D')">
+              <div class="acc-header-left">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="#AEAEB2"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <span class="acc-header-title" style="color:#AEAEB2;font-weight:500;">Driver's Age:</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span class="acc-header-value" id="accValD" style="color:#AEAEB2;font-weight:600;">30</span>
+                <svg id="accChevronD" class="acc-chevron" width="18" height="18" viewBox="0 0 24 24" fill="#C7C7CC"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+            </div>
+            <div class="acc-body" id="accBodyD">
+              <div class="acc-body-inner">
+                <div class="acc-drum-wrap">
+                  <div class="acc-drum-fade-top"></div>
+                  <div class="acc-drum-fade-bot"></div>
+                  <div class="acc-drum-selector"></div>
+                  <div class="acc-drum-scroll" id="accDrumD"></div>
+                </div>
+                <div class="acc-surcharge" id="accSurD"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="ibe-cta-area"><button class="ibe-cta">Show Cars</button></div>
+        <div class="ibe-payment">
+          <span style="text-decoration:underline;text-underline-offset:2px;">Sign in or create account</span>
+        </div>
+      </div>
+      <div class="import-row">
+        <div class="import-row-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#2BAE66"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+        <div class="import-row-body"><div class="import-row-text">Import Booking</div><div class="import-row-sub">from another site</div></div>
+        <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#C7C7CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="section-title">Exclusive for You</div>
+      <div class="promo-card">
+        <div class="promo-img-area"><div class="promo-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg> Special Offer</div></div>
+        <div class="promo-bottom"><div class="promo-sub">Save up to 25% on Premium Cars</div><div class="promo-title">Luxury and Looks for Less</div></div>
+      </div>
+      <div class="bottom-spacer"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item"><div class="nav-icon-wrap active"><svg width="22" height="22" viewBox="0 0 24 24" fill="#FF5500"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg></div><span class="nav-label active">Rent</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><rect x="5" y="3" width="14" height="18" rx="2" stroke="#4A4A4A" stroke-width="1.5" fill="none"/></svg></div><span class="nav-label">Trips</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 20 L12 6 L21 20" stroke="#4A4A4A" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg></div><span class="nav-label">Share</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 7.5 L12 14" stroke="#4A4A4A" stroke-width="1.8" stroke-linecap="round"/></svg></div><span class="nav-label">Ride</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#4A4A4A" stroke-width="1.5"/></svg></div><span class="nav-label">Subscribe</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════
+     ALT E — ACCORDION ROW → INLINE STEPPER
+     Same accordion pattern but expands to show
+     a large +/− stepper inline. Cleaner than the
+     drum for users who know roughly their age and
+     just need to nudge by 1–2 years.
+════════════════════════════════════════════════════ -->
+<div>
+  <p class="screen-label">Alt E — Accordion + inline stepper</p>
+  <p class="screen-desc">Same accordion row as Alt D but expands to a large +/− stepper in-place. Surcharge info shows live. No sheet, no navigation.</p>
+  <div class="phone" id="phoneE">
+
+    <div class="hero-block">
+      <img class="hero-img" src="promo-bmw.png" alt="">
+      <div class="hero-gradient"></div>
+      <div class="status-bar">
+        <span>19:12</span>
+        <div class="status-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#fff" opacity="0.5"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#fff" opacity="0.65"/><rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="#fff" opacity="0.85"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#fff"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2.5C10.2 2.5 12.2 3.4 13.6 4.9L15 3.5C13.2 1.6 10.7.5 8 .5S2.8 1.6 1 3.5L2.4 4.9C3.8 3.4 5.8 2.5 8 2.5z" fill="#fff"/><circle cx="8" cy="10" r="1.8" fill="#fff"/></svg>
+          <span style="font-size:12px;font-weight:700;">100</span>
+          <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#fff" stroke-opacity="0.5"/><rect x="1.5" y="1.5" width="20" height="10" rx="2.5" fill="#fff"/></svg>
+        </div>
+      </div>
+      <div class="app-header-overlay">
+        <div class="sixt-logo"><span>Si</span>XT</div>
+        <div class="profile-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="scroll">
+      <div class="ibe-wrap">
+        <div class="ibe-tabs">
+          <div class="ibe-tab active"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Cars</div>
+          <div class="ibe-tab inactive">Trucks</div>
+          <button class="ibe-close">✕</button>
+        </div>
+        <div class="ibe-fields">
+          <div class="ibe-field">
+            <div class="ibe-field-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>
+            <div class="ibe-field-value">Munich Airport</div>
+          </div>
+          <div class="ibe-field">
+            <div class="ibe-field-icon add"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+            <div class="ibe-field-value placeholder">Optional: different drop-off</div>
+          </div>
+          <div class="ibe-date-row">
+            <div class="ibe-date-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div>
+            <div class="ibe-date-text">Apr 10 | 1:00 PM – Apr 14 | 09:00 AM</div>
+          </div>
+
+          <!-- ACCORDION ROW E -->
+          <div class="acc-row" style="border-bottom:none;">
+            <div class="acc-header" onclick="toggleAccordion('E')">
+              <div class="acc-header-left">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <span class="acc-header-title">Driver's Age:</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span class="acc-header-value" id="accValE">30</span>
+                <svg id="accChevronE" class="acc-chevron" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+            </div>
+            <div class="acc-body" id="accBodyE">
+              <div class="acc-body-inner">
+                <div class="acc-stepper-inner">
+                  <div>
+                    <div class="acc-stepper-lbl">Driver age</div>
+                    <div class="acc-stepper-surcharge" id="stepSurE"></div>
+                  </div>
+                  <div class="acc-stepper-controls">
+                    <button class="acc-step-btn" id="accStepDownE" onclick="stepAccordion('E', -1)">−</button>
+                    <div style="font-size:28px;font-weight:800;color:#1A1A1A;min-width:48px;text-align:center;" id="accStepValE">30</div>
+                    <button class="acc-step-btn" id="accStepUpE" onclick="stepAccordion('E', 1)">+</button>
+                  </div>
+                </div>
+                <!-- hidden for stepSub reference -->
+                <span id="stepSubE" style="display:none;"></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="ibe-cta-area"><button class="ibe-cta">Show Cars</button></div>
+        <div class="ibe-payment">
+          <span style="text-decoration:underline;text-underline-offset:2px;">Sign in or create account</span>
+        </div>
+      </div>
+      <div class="import-row">
+        <div class="import-row-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#2BAE66"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+        <div class="import-row-body"><div class="import-row-text">Import Booking</div><div class="import-row-sub">from another site</div></div>
+        <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#C7C7CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="section-title">Exclusive for You</div>
+      <div class="promo-card">
+        <div class="promo-img-area"><div class="promo-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg> Special Offer</div></div>
+        <div class="promo-bottom"><div class="promo-sub">Save up to 25% on Premium Cars</div><div class="promo-title">Luxury and Looks for Less</div></div>
+      </div>
+      <div class="bottom-spacer"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item"><div class="nav-icon-wrap active"><svg width="22" height="22" viewBox="0 0 24 24" fill="#FF5500"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg></div><span class="nav-label active">Rent</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><rect x="5" y="3" width="14" height="18" rx="2" stroke="#4A4A4A" stroke-width="1.5" fill="none"/></svg></div><span class="nav-label">Trips</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 20 L12 6 L21 20" stroke="#4A4A4A" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg></div><span class="nav-label">Share</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 7.5 L12 14" stroke="#4A4A4A" stroke-width="1.8" stroke-linecap="round"/></svg></div><span class="nav-label">Ride</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#4A4A4A" stroke-width="1.5"/></svg></div><span class="nav-label">Subscribe</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════
+     ALT G — DARK IBE (matches real app), AGE NEXT TO
+             "SIGN IN OR CREATE ACCOUNT" BELOW CTA
+     Zero IBE clutter — age lives only in the footer
+     row of the card, next to sign-in. Tap to open drum.
+════════════════════════════════════════════════════ -->
+<div>
+  <p class="screen-label">Alt G — Below CTA, next to Sign in</p>
+  <p class="screen-desc">Dark IBE matching the real app. Age sits in the same row as "Sign in or create account" — zero clutter inside the form.</p>
+  <div class="phone dark-home-bg" id="phoneG">
+
+    <div class="hero-block" style="height:260px;">
+      <img class="hero-img" src="promo-bmw.png" alt="" style="object-position:center center;">
+      <div class="hero-gradient" style="background:linear-gradient(to bottom, transparent, #111);"></div>
+      <div class="status-bar" style="padding-top:16px;">
+        <span>19:04</span>
+        <div class="status-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#fff" opacity="0.5"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#fff" opacity="0.65"/><rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="#fff" opacity="0.85"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#fff"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2.5C10.2 2.5 12.2 3.4 13.6 4.9L15 3.5C13.2 1.6 10.7.5 8 .5S2.8 1.6 1 3.5L2.4 4.9C3.8 3.4 5.8 2.5 8 2.5z" fill="#fff"/><circle cx="8" cy="10" r="1.8" fill="#fff"/></svg>
+          <span style="font-size:12px;font-weight:700;">100</span>
+          <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#fff" stroke-opacity="0.5"/><rect x="1.5" y="1.5" width="20" height="10" rx="2.5" fill="#fff"/></svg>
+        </div>
+      </div>
+      <div class="app-header-overlay">
+        <div class="sixt-logo"><span>Si</span>XT</div>
+        <div class="profile-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="scroll" style="background:#111;">
+
+      <!-- DARK IBE -->
+      <div class="ibe-dark">
+        <div class="ibe-tabs">
+          <div class="ibe-tab active"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Cars</div>
+          <div class="ibe-tab inactive"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg> Trucks</div>
+          <button class="ibe-close">✕</button>
+        </div>
+        <div class="ibe-fields">
+          <div class="ibe-field">
+            <div class="ibe-field-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>
+            <div class="ibe-field-value">Sydney Airport</div>
+            <div class="ibe-field-right"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
+          </div>
+          <div class="ibe-field">
+            <div class="ibe-field-icon add"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+            <div class="ibe-field-value placeholder">Optional: Different Return station</div>
+          </div>
+          <div class="ibe-date-row">
+            <div class="ibe-date-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div>
+            <div class="ibe-date-text">Apr 13 | 08:00 – Apr 16 | 00:00</div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="ibe-cta-area"><button class="ibe-cta">Show offers</button></div>
+
+        <!-- Age + Sign in row -->
+        <div class="ibe-below-cta">
+          <div class="ibe-age-link" onclick="openAge('overlayG')">
+            <span class="ibe-age-link-label">Age:</span>
+            <span class="ibe-age-link-val" id="ageDisplayG">30</span>
+            <span class="ibe-age-link-unit">yrs</span>
+            <svg class="ibe-age-link-chevron" width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="ibe-divider-dot"></div>
+          <span class="ibe-signin-link">Sign in or create account</span>
+        </div>
+      </div>
+
+      <!-- Recommended section (dark) -->
+      <div style="padding:18px 16px 10px;">
+        <div style="font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.3px;">Recommended for you</div>
+      </div>
+      <div style="margin:0 16px;border-radius:18px;overflow:hidden;background:#1C1C1E;cursor:pointer;">
+        <div style="display:flex;gap:12px;padding:14px 16px;align-items:center;">
+          <div style="width:48px;height:48px;border-radius:12px;background:#FF5500;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:3px;">SIXT MIDWEEK PROMO</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);">Save up to 15% on weekday rentals</div>
+            <div style="font-size:13px;font-weight:600;color:#FF5500;margin-top:4px;text-decoration:underline;">More Info</div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-spacer"></div>
+    </div>
+
+    <!-- Dark bottom nav -->
+    <div class="bottom-nav" style="background:#1C1C1E;border-top-color:rgba(255,255,255,0.08);">
+      <div class="nav-item"><div class="nav-icon-wrap active" style="background:rgba(255,85,0,0.15);box-shadow:none;"><svg width="22" height="22" viewBox="0 0 24 24" fill="#FF5500"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg></div><span class="nav-label active">Rent</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 20 L12 6 L21 20" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" fill="none" stroke-linejoin="round"/><line x1="7" y1="20" x2="17" y2="20" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="nav-label" style="color:rgba(255,255,255,0.4);">Share</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="rgba(255,255,255,0.4)"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 7.5 L12 14" stroke="rgba(255,255,255,0.4)" stroke-width="1.8" stroke-linecap="round"/></svg></div><span class="nav-label" style="color:rgba(255,255,255,0.4);">Ride</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/><line x1="12" y1="12" x2="12" y2="7.5" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="12" x2="15.5" y2="12" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="nav-label" style="color:rgba(255,255,255,0.4);">Subscribe</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M7 2v11h3v9l7-12h-4l4-8z" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" fill="rgba(255,255,255,0.4)"/></svg></div><span class="nav-label" style="color:rgba(255,255,255,0.4);">Charge</span></div>
+    </div>
+
+    <!-- DRUM PICKER SHEET G -->
+    <div class="age-overlay" id="overlayG">
+      <div class="age-sheet">
+        <div class="age-handle"></div>
+        <div class="age-sheet-title">Driver age</div>
+        <div class="age-sheet-sub">Scroll to your age. Sign in to save it to your profile permanently.</div>
+        <div class="drum-wrap">
+          <div class="drum-fade-top"></div>
+          <div class="drum-fade-bot"></div>
+          <div class="drum-selector"></div>
+          <div class="drum-scroll" id="drumG"></div>
+        </div>
+        <div class="drum-surcharge" id="surchargeG"></div>
+        <button class="age-confirm" onclick="confirmDrum('G')">Confirm</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════
+     ALT H — EXACT APP DESIGN (white IBE on dark bg)
+             AGE NEXT TO "SIGN IN OR CREATE ACCOUNT"
+════════════════════════════════════════════════════ -->
+<div>
+  <p class="screen-label">Alt H — Current app design</p>
+  <p class="screen-desc">Matches the real app UI exactly. Age sits inline next to "Sign in or create account" — zero changes to the IBE form.</p>
+  <div class="phone" id="phoneH">
+
+    <div class="hero-block" style="height:280px;">
+      <img class="hero-img" src="promo-bmw.png" alt="" style="object-position:center center;">
+      <div class="hero-gradient"></div>
+      <div class="status-bar" style="padding-top:16px;">
+        <span>19:14</span>
+        <div class="status-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#fff" opacity="0.5"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#fff" opacity="0.65"/><rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="#fff" opacity="0.85"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#fff"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2.5C10.2 2.5 12.2 3.4 13.6 4.9L15 3.5C13.2 1.6 10.7.5 8 .5S2.8 1.6 1 3.5L2.4 4.9C3.8 3.4 5.8 2.5 8 2.5z" fill="#fff"/><circle cx="8" cy="10" r="1.8" fill="#fff"/></svg>
+          <span style="font-size:12px;font-weight:700;">100</span>
+          <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#fff" stroke-opacity="0.5"/><rect x="1.5" y="1.5" width="20" height="10" rx="2.5" fill="#fff"/></svg>
+        </div>
+      </div>
+      <div class="app-header-overlay">
+        <div class="sixt-logo"><span>Si</span>XT</div>
+        <div class="profile-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="scroll">
+
+      <!-- WHITE IBE CARD -->
+      <div style="margin:8px 16px 0;border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+
+        <!-- Tabs -->
+        <div style="display:flex;align-items:center;padding:14px 16px 0;gap:8px;">
+          <div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;background:#1A1A1A;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>
+            Cars
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;background:#F2F2F7;color:#636366;font-size:14px;font-weight:600;cursor:pointer;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>
+            Trucks
+          </div>
+        </div>
+
+        <!-- Fields -->
+        <div style="padding:6px 16px 0;">
+          <!-- Pickup -->
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #F0F0F0;cursor:pointer;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E93"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <span style="font-size:15px;font-weight:500;color:#1A1A1A;flex:1;">Sydney Airport</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E93"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          </div>
+          <!-- Drop-off -->
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #F0F0F0;cursor:pointer;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C7C7CC"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <span style="font-size:15px;font-weight:400;color:#C7C7CC;flex:1;">Optional: Different Return station</span>
+          </div>
+          <!-- Dates -->
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #F0F0F0;cursor:pointer;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E93"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+            <span style="font-size:15px;font-weight:500;color:#1A1A1A;">Apr 13 | 08:00 – Apr 16 | 00:00</span>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div style="padding:10px 16px;">
+          <button style="width:100%;padding:16px;background:#FF5500;border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;">Show offers</button>
+        </div>
+
+        <!-- Age + Sign in row -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 20px 16px;">
+          <div style="display:flex;align-items:center;gap:4px;cursor:pointer;" onclick="openAge('overlayH')">
+            <span style="font-size:13px;color:#8E8E93;font-weight:500;">Age:</span>
+            <span style="font-size:13px;color:#1A1A1A;font-weight:700;" id="ageDisplayH">30</span>
+            <span style="font-size:12px;color:#8E8E93;font-weight:400;">yrs</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#C7C7CC"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <span style="font-size:12px;font-weight:500;color:#636366;text-decoration:underline;text-underline-offset:2px;cursor:pointer;">Sign in or create account</span>
+        </div>
+      </div>
+
+      <div class="section-title">Recommended for you</div>
+      <div class="promo-card">
+        <div class="promo-img-area"><div class="promo-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg> Special Offer</div></div>
+        <div class="promo-bottom"><div class="promo-sub">Save up to 15% on midweek rentals</div><div class="promo-title">SIXT Midweek Promo</div></div>
+      </div>
+      <div class="bottom-spacer"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item"><div class="nav-icon-wrap active"><svg width="22" height="22" viewBox="0 0 24 24" fill="#FF5500"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg></div><span class="nav-label active">Rent</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 20 L12 6 L21 20" stroke="#4A4A4A" stroke-width="1.5" fill="none" stroke-linejoin="round"/><line x1="7" y1="20" x2="17" y2="20" stroke="#4A4A4A" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="nav-label">Share</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 7.5 L12 14" stroke="#4A4A4A" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></div><span class="nav-label">Ride</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#4A4A4A" stroke-width="1.5"/><line x1="12" y1="12" x2="12" y2="7.5" stroke="#4A4A4A" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="12" x2="15.5" y2="12" stroke="#4A4A4A" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="nav-label">Subscribe</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg></div><span class="nav-label">Charge</span></div>
+    </div>
+
+    <!-- DRUM PICKER SHEET H -->
+    <div class="age-overlay" id="overlayH">
+      <div class="age-sheet">
+        <div class="age-handle"></div>
+        <div class="age-sheet-title">Driver age</div>
+        <div class="age-sheet-sub">Scroll to your age. Sign in to save it to your profile permanently.</div>
+        <div class="drum-wrap">
+          <div class="drum-fade-top"></div>
+          <div class="drum-fade-bot"></div>
+          <div class="drum-selector"></div>
+          <div class="drum-scroll" id="drumH"></div>
+        </div>
+        <div class="drum-surcharge" id="surchargeH"></div>
+        <button class="age-confirm" onclick="confirmDrum('H')">Confirm</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     ALT F — AGE CHIP IN HEADER (logged-out, real app UI)
+     Age chip in the header next to profile icon.
+     IBE is completely clean. Uses actual app design.
+════════════════════════════════════════════════════ -->
+<div>
+  <p class="screen-label">Alt F — Header chip (logged out)</p>
+  <p class="screen-desc">Age chip sits in the app header next to the profile icon, pre-selected. IBE is completely clean. Once signed in, age comes from the profile.</p>
+  <div class="phone" id="phoneF">
+
+    <div class="hero-block" style="height:280px;">
+      <img class="hero-img" src="promo-bmw.png" alt="" style="object-position:center center;">
+      <div class="hero-gradient"></div>
+      <div class="status-bar" style="padding-top:16px;">
+        <span>19:12</span>
+        <div class="status-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#fff" opacity="0.5"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#fff" opacity="0.65"/><rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="#fff" opacity="0.85"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#fff"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2.5C10.2 2.5 12.2 3.4 13.6 4.9L15 3.5C13.2 1.6 10.7.5 8 .5S2.8 1.6 1 3.5L2.4 4.9C3.8 3.4 5.8 2.5 8 2.5z" fill="#fff"/><circle cx="8" cy="10" r="1.8" fill="#fff"/></svg>
+          <span style="font-size:12px;font-weight:700;">100</span>
+          <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#fff" stroke-opacity="0.5"/><rect x="1.5" y="1.5" width="20" height="10" rx="2.5" fill="#fff"/></svg>
+        </div>
+      </div>
+      <!-- Header: logo + age chip + profile -->
+      <div class="app-header-overlay">
+        <div class="sixt-logo"><span>Si</span>XT</div>
+        <div class="header-right">
+          <div class="header-age-chip" onclick="openAge('overlayF')">
+            <svg class="header-age-chip-chevron" width="13" height="13" viewBox="0 0 24 24" fill="#fff"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            <span class="header-age-chip-val" id="ageDisplayF">30</span>
+            <span class="header-age-chip-label">yrs</span>
+            <svg class="header-age-chip-chevron" width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="profile-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll">
+      <!-- WHITE IBE CARD — clean, no age row -->
+      <div style="margin:0 16px;border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        <div style="display:flex;align-items:center;padding:14px 16px 0;gap:8px;">
+          <div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;background:#1A1A1A;color:#fff;font-size:14px;font-weight:700;cursor:pointer;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg> Cars
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;background:#F2F2F7;color:#636366;font-size:14px;font-weight:600;cursor:pointer;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg> Trucks
+          </div>
+        </div>
+        <div style="padding:6px 16px 0;">
+          <div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #F0F0F0;cursor:pointer;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF5500"><path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z"/></svg>
+            <span style="font-size:15px;font-weight:700;color:#1A1A1A;flex:1;">Sydney Airport</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#C7C7CC"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #F0F0F0;cursor:pointer;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C7C7CC"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <span style="font-size:15px;font-weight:400;color:#C7C7CC;flex:1;">Optional: Different Return station</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:12px 0;cursor:pointer;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF5500"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+            <span style="font-size:15px;font-weight:700;color:#1A1A1A;">Apr 13 | 08:00 – Apr 16 | 00:00</span>
+          </div>
+        </div>
+        <div style="padding:10px 16px;">
+          <button style="width:100%;padding:16px;background:#FF5500;border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;">Show offers</button>
+        </div>
+        <div style="text-align:center;padding:0 16px 16px;">
+          <span style="font-size:13px;font-weight:600;color:#1A1A1A;text-decoration:underline;text-underline-offset:2px;cursor:pointer;">Sign in or create account</span>
+        </div>
+      </div>
+
+      <div class="section-title">Recommended for you</div>
+      <div class="promo-card">
+        <div class="promo-img-area"><div class="promo-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg> Special Offer</div></div>
+        <div class="promo-bottom"><div class="promo-sub">Save up to 15% on midweek rentals</div><div class="promo-title">SIXT Midweek Promo</div></div>
+      </div>
+      <div class="bottom-spacer"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item"><div class="nav-icon-wrap active"><svg width="22" height="22" viewBox="0 0 24 24" fill="#FF5500"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg></div><span class="nav-label active">Rent</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 20 L12 6 L21 20" stroke="#4A4A4A" stroke-width="1.5" fill="none" stroke-linejoin="round"/><line x1="7" y1="20" x2="17" y2="20" stroke="#4A4A4A" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="nav-label">Share</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 7.5 L12 14" stroke="#4A4A4A" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></div><span class="nav-label">Ride</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#4A4A4A" stroke-width="1.5"/><line x1="12" y1="12" x2="12" y2="7.5" stroke="#4A4A4A" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="12" x2="15.5" y2="12" stroke="#4A4A4A" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="nav-label">Subscribe</span></div>
+      <div class="nav-item"><div class="nav-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4A4A4A"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg></div><span class="nav-label">Charge</span></div>
+    </div>
+
+    <!-- DRUM PICKER SHEET F -->
+    <div class="age-overlay" id="overlayF">
+      <div class="age-sheet">
+        <div class="age-handle"></div>
+        <div class="age-sheet-title">Driver age</div>
+        <div class="age-sheet-sub">Scroll to your age. Sign in to save it to your profile permanently.</div>
+        <div class="drum-wrap">
+          <div class="drum-fade-top"></div>
+          <div class="drum-fade-bot"></div>
+          <div class="drum-selector"></div>
+          <div class="drum-scroll" id="drumF"></div>
+        </div>
+        <div class="drum-surcharge" id="surchargeF"></div>
+        <button class="age-confirm" onclick="confirmDrum('F')">Confirm</button>
+        <div style="text-align:center;margin-top:10px;">
+          <span style="font-size:13px;color:#8E8E93;">Want to save this? </span>
+          <span style="font-size:13px;font-weight:700;color:#FF5500;cursor:pointer;">Sign in →</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+  </div>
+<script>
+
+  // ── Surcharge rules (illustrative — covers <21, 21-24, 25-29 as in DE/ES)
+  function getSurcharge(age) {
+    if (age < 21)  return { text: 'Young driver fee applies', cls: 'bad' };
+    if (age < 25)  return { text: 'Young driver surcharge applies', cls: 'warn' };
+    if (age < 30)  return { text: 'Junior driver fee in some countries', cls: 'warn' };
+    return { text: 'Standard rate — no surcharge', cls: 'good' };
+  }
+
+  // ── DRUM PICKER ──────────────────────────────
+  const drumStates = { A: 30, C: 30 };
+
+  function buildDrum(id) {
+    const el = document.getElementById('drum' + id);
+    el.innerHTML = '';
+    const padTop = document.createElement('div');
+    padTop.className = 'drum-pad'; el.appendChild(padTop);
+    for (let age = 18; age <= 80; age++) {
+      const item = document.createElement('div');
+      item.className = 'drum-item';
+      item.textContent = age;
+      item.dataset.age = age;
+      el.appendChild(item);
+    }
+    const padBot = document.createElement('div');
+    padBot.className = 'drum-pad'; el.appendChild(padBot);
+
+    // scroll to current age
+    scrollDrumTo(id, drumStates[id]);
+
+    el.addEventListener('scroll', () => {
+      const centerAge = Math.round(el.scrollTop / 44) + 18;
+      const clamped = Math.max(18, Math.min(80, centerAge));
+      drumStates[id] = clamped;
+      updateSurcharge(id, clamped);
+    });
+  }
+
+  function scrollDrumTo(id, age) {
+    const el = document.getElementById('drum' + id);
+    el.scrollTop = (age - 18) * 44;
+  }
+
+  function updateSurcharge(id, age) {
+    const s = getSurcharge(age);
+    const el = document.getElementById('surcharge' + id);
+    el.textContent = s.text;
+    el.className = 'drum-surcharge ' + s.cls;
+  }
+
+  function openAge(overlayId) {
+    const id = overlayId.replace('overlay', '');
+    document.getElementById(overlayId).classList.add('open');
+    setTimeout(() => {
+      scrollDrumTo(id, drumStates[id]);
+      updateSurcharge(id, drumStates[id]);
+    }, 50);
+  }
+
+  function confirmDrum(id) {
+    const age = drumStates[id];
+    if (id === 'A') document.getElementById('ageDisplayA').textContent = age;
+    if (id === 'C') document.getElementById('ageDisplayC').textContent = age;
+    if (id === 'F') document.getElementById('ageDisplayF').textContent = age;
+    if (id === 'G') document.getElementById('ageDisplayG').textContent = age;
+    if (id === 'H') document.getElementById('ageDisplayH').textContent = age;
+    if (id === 'I') document.getElementById('ageDisplayI').textContent = age;
+    document.getElementById('overlay' + id).classList.remove('open');
+  }
+
+  // ── INLINE STEPPER ────────────────────────────
+
+  function stepExact(id, dir) {
+    let age = stepAges[id] + dir;
+    age = Math.max(18, Math.min(80, age));
+    stepAges[id] = age;
+    document.getElementById('stepVal' + id).textContent = age;
+    const s = getSurcharge(age);
+    document.getElementById('stepSub' + id).textContent = s.text;
+    document.getElementById('stepDown' + id).classList.toggle('disabled', age <= 18);
+    document.getElementById('stepUp' + id).classList.toggle('disabled', age >= 80);
+  }
+
+  // placeholder — see HTML above
+  // ── ACCORDION DRUM (D) & HEADER DRUM (F) ──────
+  drumStates['D'] = 30;
+  drumStates['F'] = 30;
+  drumStates['G'] = 30;
+  drumStates['H'] = 30;
+  drumStates['I'] = 30;
+
+  function buildAccDrum(id) {
+    const el = document.getElementById('accDrum' + id);
+    el.innerHTML = '';
+    const padTop = document.createElement('div');
+    padTop.className = 'acc-drum-pad'; el.appendChild(padTop);
+    for (let age = 18; age <= 80; age++) {
+      const item = document.createElement('div');
+      item.className = 'acc-drum-item';
+      item.textContent = age;
+      el.appendChild(item);
+    }
+    const padBot = document.createElement('div');
+    padBot.className = 'acc-drum-pad'; el.appendChild(padBot);
+
+    el.addEventListener('scroll', () => {
+      const centerAge = Math.round(el.scrollTop / 40) + 18;
+      const clamped = Math.max(18, Math.min(80, centerAge));
+      drumStates[id] = clamped;
+      // update header
+      document.getElementById('accVal' + id).textContent = clamped;
+      const s = getSurcharge(clamped);
+      const sur = document.getElementById('accSur' + id);
+      if (sur) { sur.textContent = s.text; sur.className = 'acc-surcharge ' + s.cls; }
+    });
+  }
+
+  // ── ACCORDION STEPPER (E) ─────────────────────
+  const stepAges = { B: 30, E: 30 };
+
+  function stepAccordion(id, dir) {
+    let age = stepAges[id] + dir;
+    age = Math.max(18, Math.min(80, age));
+    stepAges[id] = age;
+    document.getElementById('accVal' + id).textContent = age;
+    document.getElementById('accStepVal' + id).textContent = age;
+    const s = getSurcharge(age);
+    document.getElementById('stepSub' + id).textContent = s.text;
+    document.getElementById('stepSur' + id).textContent = s.text;
+    document.getElementById('stepSur' + id).className = 'acc-stepper-surcharge ' + s.cls;
+    document.getElementById('accStepDown' + id).classList.toggle('disabled', age <= 18);
+    document.getElementById('accStepUp' + id).classList.toggle('disabled', age >= 80);
+  }
+
+  // ── ACCORDION helpers ─────────────────────────
+  function toggleAccordion(id) {
+    const body = document.getElementById('accBody' + id);
+    const chevron = document.getElementById('accChevron' + id);
+    const isOpen = body.style.maxHeight && body.style.maxHeight !== '0px';
+    if (isOpen) {
+      body.style.maxHeight = '0px';
+      body.style.opacity = '0';
+      chevron.style.transform = 'rotate(0deg)';
+    } else {
+      body.style.maxHeight = body.scrollHeight + 'px';
+      body.style.opacity = '1';
+      chevron.style.transform = 'rotate(180deg)';
+      // if drum accordion, init scroll
+      if (id === 'D') {
+        setTimeout(() => { scrollDrumTo('D', drumStates['D']); updateSurcharge('D', drumStates['D']); }, 40);
+      }
+    }
+  }
+
+  // ── Init drums on load
+  window.addEventListener('load', () => {
+    buildDrum('A');
+    buildDrum('C');
+    buildDrum('D');
+    buildDrum('F');
+    buildDrum('G');
+    buildDrum('H');
+    buildAccDrum('D');
+    // init stepper B sub-label
+    const s = getSurcharge(stepAges.B);
+    document.getElementById('stepSubB').textContent = s.text;
+    // init accordion E
+    const sE = getSurcharge(stepAges.E);
+    document.getElementById('stepSubE').textContent = sE.text;
+    document.getElementById('stepSur' + 'E').textContent = sE.text;
+    document.getElementById('stepSur' + 'E').className = 'acc-stepper-surcharge ' + sE.cls;
+  });
+
+</script>
+</div>
 
 </body>
 </html>
